@@ -10,7 +10,7 @@ RUN go mod inti github.com/monandkey/expedition3gpp \
     && go mod tidy \
     && mkdir ./bin/ \
     && GOOS=windows GOARCH=amd64 go build -o ./bin/${DST}.exe ${SRC}.go \
-    && GOOS=linux GOARCH=amd64 go build -o ./bin/${DST}-linux,x64 ${SRC}.go
+    && GOOS=linux GOARCH=amd64 go build -o ./bin/${DST} ${SRC}.go
 
 FROM alpine:latest as runner
 

@@ -8,10 +8,10 @@ DOCKER_BUILD_ARGS         ?= --rm
 EXPEDITION3GPP_IMAGE_NAME ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:${DOCKER_TAG}
 
 
-build-all: build-ueransim
+build-all: build-expedition3gpp
 
-.PHONY: build-ueransim
-build-ueransim: 
+.PHONY: build-expedition3gpp
+build-expedition3gpp: 
 	${DOCKER_ENV} docker build ${DOCKER_BUILD_ARGS} \
 		--tag ${EXPEDITION3GPP_IMAGE_NAME} \
 		--file ./build/Dockerfile \
