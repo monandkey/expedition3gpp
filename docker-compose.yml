@@ -2,8 +2,7 @@ version: "3.7"
 
 services:
     expedition3gpp:
-        build: ./build/
-        image: expedition3gpp
+        image: monandkey/expedition3gpp:latest
         container_name: expedition3gpp
         volumes:
             - "./:/home/expedition3gpp/container:rw"
