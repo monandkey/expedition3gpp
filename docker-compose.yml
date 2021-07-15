@@ -1,14 +1,11 @@
 version: "3.7"
 
-# Volume Define
-# volumes:
-#     ruby_volume:
-
 services:
-    ruby:
-        image: golang:latest
-        container_name: golang-dev
+    expedition3gpp:
+        build: ./build/
+        image: expedition3gpp
+        container_name: expedition3gpp
         volumes:
             - "./:/home:rw"
-        hostname: golang-dev
+        hostname: expedition3gpp
         command: /bin/sh -c "while :; do sleep 10; done"

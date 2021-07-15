@@ -1,65 +1,63 @@
 package main
 
 import (
+	"os"
 	"fmt"
-	"flag"
-	"regexp"
-	"errors"
-	"github.com/PuerkitoBio/goquery"
+
+	"github.com/spf13/cobra"
+	"local.packages/expedition3gpp"
 )
 
-type Specification struct {
+type params struct {
 	url string
-	version string
+	documentNumber string
+	documentVersion string
+	outputPath string
 }
 
-func formatOutput(spec []Specification) {
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	fmt.Println("| No. | Version | URL                                                                              |")
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	for i := 0; i < len(spec); i++ {
-		fmt.Printf("| %3d | %7s | %-80s |\n", i + 1, spec[i].version, spec[i].url)
-	}
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-}
-
-func stringSearch(targetString string, reString string) (string, error) {
-	re := regexp.MustCompile(reString)
-	searchResult := re.FindAllStringSubmatch(targetString, -1)
-	if searchResult != nil {
-		return searchResult[0][0], errors.New("param is empty")
-	}
-	return "0", nil
-}
-
-func getPage(url string) {
-	spec := make([]Specification, 0)
-
-	doc, _ := goquery.NewDocument(url)
-	doc.Find("a").Each(func(_ int, s *goquery.Selection) {
-		href, _ := s.Attr("href")
-		text := s.Text()
-
-		str1, err := stringSearch(href, `http.*.zip`)
-		if err != nil {
-			str2, err := stringSearch(text, `[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}`)
-			if err != nil {
-				spec = append(spec, Specification{str1, str2})
-			}
-		}
-	})
-	formatOutput(spec)
-}
-
+// --------------------------------------------------
+// Main
+// --------------------------------------------------
 func main() {
-	// url := "https://portal.3gpp.org/desktopmodules/Specifications/SpecificationDetails.aspx?specificationId=849"
+	params := params{
+		url:            "default",
+		documentNumber: "default",
+		documentVersion: "default",	
+		outputPath:      "./",
+	}
 
-	url := flag.String("url", "-", "url")
-	flag.Parse()
+	cmd := &cobra.Command{}
+	cmd.Use = "expedition3gpp [OPTIONS] DOCUMENT_NUMBER DOCUMENT_VERSION OUTPUT_PATH"
+	cmd.Short = "Download the 3GPP document"
 
-	if *url != "-" {
-		getPage(*url)
-	} else {
-		fmt.Println("Please specify a valid URL.")
+	cmd.Flags().StringVarP(&params.url, "url", "u", params.url, "3GPP Doument URL")
+	cmd.Flags().StringVarP(&params.documentNumber, "document-number", "n", params.documentNumber, "3GPP Document Number")
+	cmd.Flags().StringVarP(&params.documentVersion, "document-version", "v", params.documentVersion, "3GPP Document Version")
+	cmd.Flags().StringVarP(&params.outputPath, "output-path", "o", params.outputPath, "Where you want the output to go")
+
+	cmd.RunE = func(cmd *cobra.Command, args []string) error {
+		if params.url == "default" && params.documentNumber == "default" {
+			return cmd.Help()
+		}
+
+		config := expedition3gpp.Config{
+			Url:             params.url,
+			DocumentNumber:  params.documentNumber,
+			DocumentVersion: params.documentVersion,
+			OutputPath:      params.outputPath,
+		}
+
+		err := expedition3gpp.RunExpedition3gpp(&config)
+		if err != nil {
+			fmt.Println(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		return nil
+	}
+
+	if err := cmd.Execute(); err != nil {
+		fmt.Println(os.Stderr, err)
+		os.Exit(1)
 	}
 }
