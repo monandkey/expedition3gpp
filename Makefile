@@ -21,6 +21,6 @@ build-expedition3gpp:
 # Sample Command
 # DOCKER_BUILDKIT=1 docker build --rm \
 #   --tag docker.io/monandkey/expedition3gpp:0.2 \
-#   --file ./Dockerfile \
+#   --file ./build/Dockerfile \
 #   --no-cache \
 #   ./
