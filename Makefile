@@ -14,7 +14,7 @@ build-all: build-ueransim
 build-ueransim: 
 	${DOCKER_ENV} docker build ${DOCKER_BUILD_ARGS} \
 		--tag ${EXPEDITION3GPP_IMAGE_NAME} \
-		--file ./Dockerfile \
+		--file ./build/Dockerfile \
 		--no-cache \
 		./
 
