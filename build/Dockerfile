@@ -8,9 +8,3 @@ RUN go mod tidy \
     && mkdir ./bin/ \
     && GOOS=windows GOARCH=amd64 go build -o ./bin/expedition3gpp.exe main.go \
     && GOOS=linux GOARCH=amd64 go build -o ./bin/expedition3gpp main.go
-
-FROM alpine:latest as runner
-
-WORKDIR /expedition3gpp
-COPY --from=builder /home/expedition3gpp/bin/expedition3gpp ./
-COPY --from=builder /home/expedition3gpp/bin/expedition3gpp.exe ./
