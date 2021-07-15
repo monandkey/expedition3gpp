@@ -12,7 +12,7 @@ RUN go mod inti github.com/monandkey/expedition3gpp \
     && GOOS=windows GOARCH=amd64 go build -o ./bin/${DST}.exe ${SRC}.go \
     && GOOS=linux GOARCH=amd64 go build -o ./bin/${DST}-linux,x64 ${SRC}.go
 
-FROM apline:latest as runner
+FROM alpine:latest as runner
 
 WORKDIR /expedition3gpp
 COPY --from=builder /home/expedition3gpp/bin/expedition3gpp ./
