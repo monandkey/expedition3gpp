@@ -7,15 +7,10 @@ import (
 )
 
 type Config struct {
-	Url string
 	DocumentNumber string
 	DocumentVersion string
 	OutputPath string
-}
-
-func showUrlList_useUrl(config *Config) error {
-	GetPage(config.Url)
-	return nil
+	Cache bool
 }
 
 func showUrlList_useNumber(config *Config) error {
@@ -54,10 +49,7 @@ func getUrlContnts(config *Config) error {
 }
 
 func RunExpedition3gpp(config *Config) error {
-	if config.Url != "default" {
-		showUrlList_useUrl(config)
-
-	} else if config.DocumentNumber != "default" && config.DocumentVersion == "default" {
+	if config.DocumentNumber != "default" && config.DocumentVersion == "default" {
 		showUrlList_useNumber(config)
 
 	} else if config.DocumentNumber != "default" && config.DocumentVersion != "default" {
