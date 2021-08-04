@@ -27,12 +27,7 @@ func main() {
 		cache:           false,
 	}
 
-	initConfig := expedition3gpp.InitConfig {
-		StrageLocation:     "HOMEDIR",
-		CacheEnable:        true,
-		CacheRetentionTime: 14400,
-		CacheLocation:      "HOMEDIR",
-	}
+	initConfig := expedition3gpp.GetConfigParameter()
 
 	cmd := &cobra.Command{}
 	cmd.Use = "expedition3gpp"
@@ -50,15 +45,11 @@ func main() {
 	cmd.Flags().StringVar(&initConfig.CacheLocation, "cache-location", initConfig.CacheLocation, "")
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		if expedition3gpp.ExistInitConfig() {
-			expedition3gpp.InitializeConfig()
-			os.Exit(1)
-		}
-
 		for _, v := range os.Args {
-			if strings.Contains(v, "init") {
+			if strings.Contains(v, "init") || expedition3gpp.ExistInitConfig() {
 				expedition3gpp.InitializeConfig()
-				os.Exit(1)
+				fmt.Println("Create confgi file")
+				os.Exit(0)
 			}
 		}
 

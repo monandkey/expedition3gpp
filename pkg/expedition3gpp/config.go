@@ -6,20 +6,81 @@ import (
 	"strconv"
 	"runtime"
 	"io/ioutil"
+	"gopkg.in/yaml.v2"
 )
+
+type params struct {
+	StrageLocation     string `yaml:"strageLocation"`
+	CacheEnable        bool   `yaml:"cacheEnable"`
+	CacheRetentionTime int    `yaml:"cacheRetentionTime"`
+	CacheLocation      string `yaml:"cacheLocation"`
+}
+
+type configPath struct {
+	path string
+}
+
+func (c configPath) configLoad() params {
+	params := params{}
+	b, _ := os.ReadFile(c.path)
+	yaml.Unmarshal(b, &params)
+	return params
+}
+
+type disassembledCharacter struct {
+	homedir  string
+	separate string
+	filename string
+}
+
+func (d disassembledCharacter) stringJoin() configPath {
+	c := configPath{path: d.homedir + d.separate + d.filename}
+	return c
+}
+
+func getHomedir() string {
+	h, err := os.UserHomeDir()
+	if err != nil {
+		os.Exit(0)
+	}
+	return h
+}
+
+func getSeparate() string {
+	switch runtime.GOOS {
+		case "windows":
+			return "\\"
+		case "linux":
+			return "/"
+		default:
+			fmt.Println("Your OS is not support")
+			os.Exit(0)
+	}
+	return ""
+}
+
+func getConfigName() string {
+	return ".expedition3gpp.yml"
+}
+
+func getConfigParameter() params {
+	ds := disassembledCharacter{
+		homedir:  getHomedir(),
+		separate: getSeparate(),
+		filename: getConfigName(),
+	}
+	return ds.stringJoin().configLoad()
+}
+
+func GetConfigParameter() params {
+	return getConfigParameter()
+}
 
 type initConfig struct {
 	strageLocation     string
 	cacheEnable        bool
 	cacheRetentionTime int
 	cacheLocation      string
-}
-
-type InitConfig struct {
-	StrageLocation     string
-	CacheEnable        bool
-	CacheRetentionTime int
-	CacheLocation      string
 }
 
 func InitializeConfig() {
@@ -79,8 +140,12 @@ func writeConfig(data []string, fileName string) {
 }
 
 func ExistInitConfig() bool {
-	homeDir, _ := os.UserHomeDir()
-	fileName := homeDir + "/" + ".expedition3gpp.yml"
-	_, err := os.Stat(fileName)
+	ds := disassembledCharacter{
+		homedir:  getHomedir(),
+		separate: getSeparate(),
+		filename: getConfigName(),
+	}
+	f := ds.homedir + ds.separate + ds.filename
+	_, err := os.Stat(f)
 	return os.IsNotExist(err)
 }
