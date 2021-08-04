@@ -1,14 +1,46 @@
 package expedition3gpp
 
 import (
+	"os"
+	"io"
 	"errors"
 	"regexp"
+	"net/http"
+
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Specification struct {
+// --------------------------------------------------
+// File Download
+// --------------------------------------------------
+type archiveUrl struct {
 	url string
-	version string
+}
+
+type saveLocation struct {
+	path string
+}
+
+func (s saveLocation) validateLocation() bool {
+	_, err := os.Stat(s.path)
+	return os.IsNotExist(err)
+}
+
+func (a archiveUrl) downloadDocument(f saveLocation) error {
+	resp, err := http.Get(a.url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	out, err := os.Create(f.path)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
 
 // --------------------------------------------------
@@ -21,6 +53,11 @@ func stringSearch(targetString string, reString string) (string, error) {
 		return searchResult[0][0], errors.New("param is empty")
 	}
 	return "0", nil
+}
+
+type Specification struct {
+	url string
+	version string
 }
 
 // --------------------------------------------------

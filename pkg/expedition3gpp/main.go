@@ -1,16 +1,17 @@
 package expedition3gpp
 
 import (
+	"os"
 	"log"
 	"fmt"
 	"regexp"
 )
 
 type Config struct {
-	DocumentNumber string
+	DocumentNumber  string
 	DocumentVersion string
-	OutputPath string
-	Cache bool
+	OutputPath      string
+	Cache           bool
 }
 
 func showUrlList_useNumber(config *Config) error {
@@ -29,17 +30,23 @@ func getUrlContnts(config *Config) error {
 		reString := config.DocumentNumber + `-.*zip`
 		re := regexp.MustCompile(reString)
 		searchResult := re.FindAllStringSubmatch(dstUrl, -1)
-		filePath := "./" + searchResult[0][0]
+		filePath := saveLocation{path: getSeparate() + searchResult[0][0]}
 
-		if err := TargetDownload(filePath, dstUrl); err != nil {
-			panic(err)
+		if !(filePath.validateLocation()) {
+			os.Exit(0)
+		}
+
+		a := archiveUrl{url: dstUrl}
+		if err := a.downloadDocument(filePath); err != nil {
+			log.Fatal(err)
+			os.Exit(0)
 
 		} else {
-			if err := FileUnzip(filePath); err != nil {
+			if err := FileUnzip(filePath.path); err != nil {
 				log.Fatal(err)
 
 			} else {
-				if err := FileRemove(filePath); err != nil {
+				if err := FileRemove(filePath.path); err != nil {
 					log.Fatal(err)
 				}
 			}
@@ -49,10 +56,10 @@ func getUrlContnts(config *Config) error {
 }
 
 func RunExpedition3gpp(config *Config) error {
-	if config.DocumentNumber != "default" && config.DocumentVersion == "default" {
+	if config.DocumentNumber != "" && config.DocumentVersion == "" {
 		showUrlList_useNumber(config)
 
-	} else if config.DocumentNumber != "default" && config.DocumentVersion != "default" {
+	} else if config.DocumentNumber != "" && config.DocumentVersion != "" {
 		getUrlContnts(config)
 	}
 	return nil

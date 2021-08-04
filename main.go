@@ -33,9 +33,9 @@ func main() {
 	cmd.Use = "expedition3gpp"
 	cmd.Short = "Download the 3GPP document"
 
-	cmd.Flags().StringVarP(&params.documentNumber, "document-number", "N", params.documentNumber, "3GPP Document Number")
-	cmd.Flags().StringVarP(&params.documentVersion, "document-version", "V", params.documentVersion, "3GPP Document Version")
-	cmd.Flags().StringVarP(&params.outputPath, "output-path", "O", params.outputPath, "Where you want the output to go")
+	cmd.Flags().StringVar(&params.documentNumber, "document-number", params.documentNumber, "3GPP Document Number")
+	cmd.Flags().StringVar(&params.documentVersion, "document-version", params.documentVersion, "3GPP Document Version")
+	cmd.Flags().StringVar(&params.outputPath, "output-path", params.outputPath, "Where you want the output to go")
 	cmd.Flags().BoolVar(&params.cache, "no-cache", params.cache, "Not using cache")
 
 	cmd.Flags().Bool("init", true, "Initialize expedition3gpp config")
