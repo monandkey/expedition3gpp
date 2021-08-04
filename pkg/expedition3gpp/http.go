@@ -150,8 +150,9 @@ func (c cacheFile) validateLocation() bool {
 	return os.IsNotExist(err)
 }
 
-func cacheDisplay() {
-	cf := cacheFile{name: "/root/.cache/ts23401.yaml"}
+func cacheDisplay(d string) {
+	fp := getHomedir() + getSeparate() + d + "yaml"
+	cf := cacheFile{name: fp}
 	if !(cf.validateLocation()) {
 		cy := cf.yamlLoad()
 		fmt.Println(cy)
@@ -161,8 +162,8 @@ func cacheDisplay() {
 // --------------------------------------------------
 // Create cache
 // --------------------------------------------------
-func (c cacheYaml) createYaml() {
-	f, err := os.OpenFile("./ts23401.yaml", os.O_WRONLY|os.O_CREATE, 0664)
+func (c cacheYaml) createYaml(fp string) {
+	f, err := os.OpenFile(fp, os.O_WRONLY|os.O_CREATE, 0664)
 	if err != nil {
 		log.Fatal(err)
 	
@@ -170,7 +171,6 @@ func (c cacheYaml) createYaml() {
 	defer f.Close()
 
 	d := yaml.NewEncoder(f)
-
 	if err := d.Encode(&c); err != nil {
 		log.Fatal(err)
 	}
@@ -178,10 +178,11 @@ func (c cacheYaml) createYaml() {
 	d.Close()
 }
 
-func CreateYaml() {
-	cf := cacheFile{name: "/root/.cache/ts23401.yaml"}
-	if !(cf.validateLocation()) {
+func CreateYaml(d string) {
+	fp := getHomedir() + getSeparate() + d + "yaml"
+	cf := cacheFile{name: fp}
+	if cf.validateLocation() {
 		cy:= cf.yamlLoad()
-		cy.createYaml()
+		cy.createYaml(fp)
 	}
 }
