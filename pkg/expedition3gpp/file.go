@@ -2,29 +2,8 @@ package expedition3gpp
 
 import (
 	"os"
-	"io"
     "strings"
-	"net/http"
 )
-
-// --------------------------------------------------
-// File Download
-// --------------------------------------------------
-func TargetDownload(filepath string, dstUrl string) error {
-	resp, err := http.Get(dstUrl)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-    out, err := os.Create(filepath)
-    if err != nil {
-        return err
-    }
-    defer out.Close()
-
-    _, err = io.Copy(out, resp.Body)
-    return err
-}
 
 // --------------------------------------------------
 // File Remove

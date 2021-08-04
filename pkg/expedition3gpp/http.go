@@ -3,10 +3,13 @@ package expedition3gpp
 import (
 	"os"
 	"io"
+	"fmt"
+	"log"
 	"errors"
 	"regexp"
 	"net/http"
 
+	"gopkg.in/yaml.v2"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -112,3 +115,73 @@ func CreateUrl(docNum string) string {
 	return srcUrl
 }
 
+// --------------------------------------------------
+// Cache struct
+// --------------------------------------------------
+type cacheYaml struct {
+	YamlVersion    int      `yaml:"version"`
+	Title          string   `yaml:"title"`
+	CreateDate     string   `yaml:"createDate"`
+	Value          []value  `yaml:"value"`
+}
+
+type value struct {
+	Version string `yaml:"version"`
+	Name    string `yaml:"name"`
+	Url     string `yaml:"url"`
+}
+
+type cacheFile struct {
+	name string
+}
+
+// --------------------------------------------------
+// Load cache
+// --------------------------------------------------
+func (c cacheFile) yamlLoad() cacheYaml {
+	cacheYaml := cacheYaml{}
+	b, _ := os.ReadFile(c.name)
+	yaml.Unmarshal(b, &cacheYaml)
+	return cacheYaml
+}
+
+func (c cacheFile) validateLocation() bool {
+	_, err := os.Stat(c.name)
+	return os.IsNotExist(err)
+}
+
+func cacheDisplay() {
+	cf := cacheFile{name: "/root/.cache/ts23401.yaml"}
+	if !(cf.validateLocation()) {
+		cy := cf.yamlLoad()
+		fmt.Println(cy)
+	}
+}
+
+// --------------------------------------------------
+// Create cache
+// --------------------------------------------------
+func (c cacheYaml) createYaml() {
+	f, err := os.OpenFile("./ts23401.yaml", os.O_WRONLY|os.O_CREATE, 0664)
+	if err != nil {
+		log.Fatal(err)
+	
+	}
+	defer f.Close()
+
+	d := yaml.NewEncoder(f)
+
+	if err := d.Encode(&c); err != nil {
+		log.Fatal(err)
+	}
+
+	d.Close()
+}
+
+func CreateYaml() {
+	cf := cacheFile{name: "/root/.cache/ts23401.yaml"}
+	if !(cf.validateLocation()) {
+		cy:= cf.yamlLoad()
+		cy.createYaml()
+	}
+}

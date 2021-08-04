@@ -10,10 +10,10 @@ import (
 )
 
 type params struct {
-	documentNumber string
+	documentNumber  string
 	documentVersion string
-	outputPath string
-	cache bool
+	outputPath      string
+	cache           bool
 }
 
 // --------------------------------------------------

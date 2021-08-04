@@ -25,7 +25,7 @@ func FileUnzip(filePath string) error {
         }
         defer rc.Close()
 
-        path := filepath.Join("./", f.Name)
+        path := filepath.Join(getSeparate(), f.Name)
         if f.FileInfo().IsDir() {
             os.MkdirAll(path, f.Mode())
         } else {
