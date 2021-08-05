@@ -76,6 +76,13 @@ func GetConfigParameter() params {
 	return getConfigParameter()
 }
 
+type InitConfig struct {
+	StrageLocation     string
+	CacheEnable        bool
+	CacheRetentionTime int
+	CacheLocation      string
+}
+
 type initConfig struct {
 	strageLocation     string
 	cacheEnable        bool
@@ -83,14 +90,14 @@ type initConfig struct {
 	cacheLocation      string
 }
 
-func InitializeConfig() {
+func InitializeConfig(initConfig *InitConfig) {
 
-	initConfig := initConfig{
-		strageLocation: "HOMEDIR",
-		cacheEnable: true,
-		cacheRetentionTime: 14400,
-		cacheLocation: "HOMEDIR",
-	}
+	// initConfig := initConfig{
+	// 	strageLocation: "HOMEDIR",
+	// 	cacheEnable: true,
+	// 	cacheRetentionTime: 14400,
+	// 	cacheLocation: "HOMEDIR",
+	// }
 
 	homeDir, _ := os.UserHomeDir()
 	var fileName *string
@@ -115,10 +122,15 @@ func InitializeConfig() {
 	}
 	defer fp.Close()
 
-	data := [] string{"strageLocation: " + initConfig.strageLocation + "\n",
-					  "cacheEnable: " + strconv.FormatBool(initConfig.cacheEnable) + "\n",
-					  "cacheRetentionTime: " + strconv.Itoa(initConfig.cacheRetentionTime) + "\n",
-					  "cacheLocation: " + initConfig.cacheLocation + "\n"}
+	// data := [] string{"strageLocation: " + initConfig.strageLocation + "\n",
+	// 				  "cacheEnable: " + strconv.FormatBool(initConfig.cacheEnable) + "\n",
+	// 				  "cacheRetentionTime: " + strconv.Itoa(initConfig.cacheRetentionTime) + "\n",
+	// 				  "cacheLocation: " + initConfig.cacheLocation + "\n"}
+
+	data := [] string{"strageLocation: " + initConfig.StrageLocation + "\n",
+					  "cacheEnable: " + strconv.FormatBool(initConfig.CacheEnable) + "\n",
+					  "cacheRetentionTime: " + strconv.Itoa(initConfig.CacheRetentionTime) + "\n",
+					  "cacheLocation: " + initConfig.CacheLocation + "\n"}
 
 	writeConfig(data, *fileName)
 }

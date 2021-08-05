@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"errors"
+	"strings"
 	"regexp"
 	"net/http"
 
@@ -111,8 +112,15 @@ func GetDstUrl(url string, docVer string) string {
 // Create URL
 // --------------------------------------------------
 func CreateUrl(docNum string) string {
-	srcUrl := "https://www.3gpp.org/DynaReport/" + docNum + ".htm"
+	srcUrl := "https://www.3gpp.org/DynaReport/" + notationAdjustment(docNum) + ".htm"
 	return srcUrl
+}
+
+func notationAdjustment(docNum string) string {
+	if strings.Index(docNum, ".") != -1 {
+		return strings.Replace(docNum, ".", "", 1)
+	}
+	return docNum
 }
 
 // --------------------------------------------------
