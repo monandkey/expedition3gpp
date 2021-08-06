@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"fmt"
+    "time"
     "strings"
 	"archive/zip"
 	"path/filepath"
@@ -12,7 +13,7 @@ import (
 // --------------------------------------------------
 // File Remove
 // --------------------------------------------------
-func FileRemove(filePath string) error {
+func fileRemove(filePath string) error {
 	if err := os.Remove(filePath); err != nil {
 		return err
 	}
@@ -43,7 +44,7 @@ func permissionChange(filePath string) {
 // --------------------------------------------------
 // File Un zip
 // --------------------------------------------------
-func FileUnzip(filePath string) error {
+func fileUnzip(filePath string) error {
     r, err := zip.OpenReader(filePath)
     if err != nil {
         return err
@@ -91,10 +92,84 @@ func formatOutput(spec []Specification) {
 	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 }
 
+func formatOutputOneVersion(spec []Specification, version string) {
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+	fmt.Println("| No. | Version | URL                                                                              |")
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+	for i := 0; i < len(spec); i++ {
+        if spec[i].version == version {
+            fmt.Printf("| %3d | %7s | %-80s |\n", 1, spec[i].version, spec[i].url)
+        }
+	}
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+}
+
+func formatOutputYaml(cy cacheYaml) {
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+	fmt.Println("| No. | Version | URL                                                                              |")
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+	for i := 0; i < len(cy.Value); i++ {
+		fmt.Printf("| %3d | %7s | %-80s |\n", i + 1, cy.Value[i].Version, cy.Value[i].Url)
+	}
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+}
+
+func formatOutputYamlOneVersion(cy cacheYaml, version string) {
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+	fmt.Println("| No. | Version | URL                                                                              |")
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+	for i := 0; i < len(cy.Value); i++ {
+        if cy.Value[i].Version == version {
+            fmt.Printf("| %3d | %7s | %-80s |\n", 1, cy.Value[i].Version, cy.Value[i].Url)
+        }
+	}
+	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
+}
+
 // --------------------------------------------------
 // Create Cache file
 // --------------------------------------------------
-func createCacheFile(spec []Specification) {
-	
+type cache struct {
+	YamlVersion    int
+	Title          string
+	CreateDate     string
+	Value          []value
 }
 
+type value struct {
+	Version string
+	Name    string
+	Url     string
+}
+
+func createCacheFile(docNum string, spec []Specification) {
+    cache := cache{
+        YamlVersion: 2,
+        Title:       "3GPP Document " + docNum,
+        CreateDate:  getNowTime(),
+        Value:       valueStructCreation(docNum, spec),
+    }
+    fp, b := checkYaml(docNum)
+    if b {
+        cache.createYaml(fp)
+    }
+}
+
+func getNowTime() string {
+	t := time.Now()
+	const layout = "2006-01-02 15:04:05.757"
+	return t.Format(layout)
+}
+
+func valueStructCreation(docNum string, spec []Specification) []value {
+    values := []value{}
+    for _, v := range spec {
+        value := value{
+            Version: v.version,
+            Name:    docNum,
+            Url:     v.url,
+        }
+        values = append(values, value)
+    }
+    return values
+}

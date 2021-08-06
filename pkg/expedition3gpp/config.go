@@ -60,7 +60,7 @@ func getSeparate() string {
 }
 
 func getConfigName() string {
-	return ".expedition3gpp.yml"
+	return ".expedition3gpp.yaml"
 }
 
 func getConfigParameter() params {
@@ -91,23 +91,15 @@ type initConfig struct {
 }
 
 func InitializeConfig(initConfig *InitConfig) {
-
-	// initConfig := initConfig{
-	// 	strageLocation: "HOMEDIR",
-	// 	cacheEnable: true,
-	// 	cacheRetentionTime: 14400,
-	// 	cacheLocation: "HOMEDIR",
-	// }
-
 	homeDir, _ := os.UserHomeDir()
 	var fileName *string
 
 	if runtime.GOOS == "windows" {
-		str := homeDir + "\\" + ".expedition3gpp.yml"
+		str := homeDir + "\\" + getConfigName()
 		fileName = &str
 	
 	} else if runtime.GOOS == "linux" {
-		str := homeDir + "/" + ".expedition3gpp.yml"
+		str := homeDir + "/" + getConfigName()
 		fileName = &str
 	
 	} else {
@@ -121,12 +113,6 @@ func InitializeConfig(initConfig *InitConfig) {
 		return
 	}
 	defer fp.Close()
-
-	// data := [] string{"strageLocation: " + initConfig.strageLocation + "\n",
-	// 				  "cacheEnable: " + strconv.FormatBool(initConfig.cacheEnable) + "\n",
-	// 				  "cacheRetentionTime: " + strconv.Itoa(initConfig.cacheRetentionTime) + "\n",
-	// 				  "cacheLocation: " + initConfig.cacheLocation + "\n"}
-
 	data := [] string{"strageLocation: " + initConfig.StrageLocation + "\n",
 					  "cacheEnable: " + strconv.FormatBool(initConfig.CacheEnable) + "\n",
 					  "cacheRetentionTime: " + strconv.Itoa(initConfig.CacheRetentionTime) + "\n",

@@ -3,7 +3,6 @@ package expedition3gpp
 import (
 	"os"
 	"io"
-	"fmt"
 	"log"
 	"errors"
 	"strings"
@@ -27,7 +26,7 @@ type saveLocation struct {
 
 func (s saveLocation) validateLocation() bool {
 	_, err := os.Stat(s.path)
-	return os.IsNotExist(err)
+	return err == nil
 }
 
 func (a archiveUrl) downloadDocument(f saveLocation) error {
@@ -67,7 +66,7 @@ type Specification struct {
 // --------------------------------------------------
 // Get HTML
 // --------------------------------------------------
-func GetPage(url string) {
+func getHTMLContents(url string) []Specification {
 	spec := make([]Specification, 0)
 
 	doc, _ := goquery.NewDocument(url)
@@ -81,10 +80,10 @@ func GetPage(url string) {
 			spec = append(spec, Specification{str1, str2})
 		}
 	})
-	formatOutput(spec)
+	return spec
 }
 
-func GetDstUrl(url string, docVer string) string {
+func getDstUrl(url string, docVer string) string {
 	spec := make([]Specification, 0)
 
 	doc, _ := goquery.NewDocument(url)
@@ -98,6 +97,7 @@ func GetDstUrl(url string, docVer string) string {
 			spec = append(spec, Specification{str1, str2})
 		}
 	})
+
 	for i := 0; i < len(spec); i++ {
 		if spec[i].version == docVer {
 			return spec[i].url
@@ -105,13 +105,13 @@ func GetDstUrl(url string, docVer string) string {
 			continue
 		}
 	}
-	return "0"
+	return ""
 }
 
 // --------------------------------------------------
 // Create URL
 // --------------------------------------------------
-func CreateUrl(docNum string) string {
+func createUrl(docNum string) string {
 	srcUrl := "https://www.3gpp.org/DynaReport/" + notationAdjustment(docNum) + ".htm"
 	return srcUrl
 }
@@ -127,13 +127,13 @@ func notationAdjustment(docNum string) string {
 // Cache struct
 // --------------------------------------------------
 type cacheYaml struct {
-	YamlVersion    int      `yaml:"version"`
-	Title          string   `yaml:"title"`
-	CreateDate     string   `yaml:"createDate"`
-	Value          []value  `yaml:"value"`
+	YamlVersion    int          `yaml:"version"`
+	Title          string       `yaml:"title"`
+	CreateDate     string       `yaml:"createDate"`
+	Value          []valueYaml  `yaml:"value"`
 }
 
-type value struct {
+type valueYaml struct {
 	Version string `yaml:"version"`
 	Name    string `yaml:"name"`
 	Url     string `yaml:"url"`
@@ -155,26 +155,25 @@ func (c cacheFile) yamlLoad() cacheYaml {
 
 func (c cacheFile) validateLocation() bool {
 	_, err := os.Stat(c.name)
-	return os.IsNotExist(err)
+	return err == nil
 }
 
-func cacheDisplay(d string) {
-	fp := getHomedir() + getSeparate() + d + "yaml"
+func getCacheValue(d string) cacheYaml {
+	fp := getHomedir() + getSeparate() + d + ".yaml"
 	cf := cacheFile{name: fp}
 	if !(cf.validateLocation()) {
-		cy := cf.yamlLoad()
-		fmt.Println(cy)
+		os.Exit(0)
 	}
+	return cf.yamlLoad()
 }
 
 // --------------------------------------------------
 // Create cache
 // --------------------------------------------------
-func (c cacheYaml) createYaml(fp string) {
+func (c cache) createYaml(fp string) {
 	f, err := os.OpenFile(fp, os.O_WRONLY|os.O_CREATE, 0664)
 	if err != nil {
 		log.Fatal(err)
-	
 	}
 	defer f.Close()
 
@@ -182,15 +181,14 @@ func (c cacheYaml) createYaml(fp string) {
 	if err := d.Encode(&c); err != nil {
 		log.Fatal(err)
 	}
-
-	d.Close()
+	defer d.Close()
 }
 
-func CreateYaml(d string) {
-	fp := getHomedir() + getSeparate() + d + "yaml"
+func checkYaml(d string) (string, bool) {
+	fp := getHomedir() + getSeparate() + d + ".yaml"
 	cf := cacheFile{name: fp}
 	if cf.validateLocation() {
-		cy:= cf.yamlLoad()
-		cy.createYaml(fp)
+		return "", false
 	}
+	return fp ,true
 }
