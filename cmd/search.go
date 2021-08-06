@@ -47,7 +47,7 @@ func init() {
 			Cache:           params.cache,
 		}
 
-		err := expedition3gpp.RunExpedition3gpp(&config)
+		err := expedition3gpp.SearchExpedition3gpp(&config)
 		if err != nil {
 			fmt.Println(os.Stderr, err)
 			os.Exit(0)

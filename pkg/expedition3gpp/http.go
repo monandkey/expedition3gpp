@@ -29,14 +29,14 @@ func (s saveLocation) validateLocation() bool {
 	return err == nil
 }
 
-func (a archiveUrl) downloadDocument(f saveLocation) error {
+func (a archiveUrl) downloadDocument(f string) error {
 	resp, err := http.Get(a.url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	out, err := os.Create(f.path)
+	out, err := os.Create(f)
 	if err != nil {
 		return err
 	}
@@ -81,31 +81,6 @@ func getHTMLContents(url string) []Specification {
 		}
 	})
 	return spec
-}
-
-func getDstUrl(url string, docVer string) string {
-	spec := make([]Specification, 0)
-
-	doc, _ := goquery.NewDocument(url)
-	doc.Find("a").Each(func(_ int, s *goquery.Selection) {
-		href, _ := s.Attr("href")
-		text := s.Text()
-
-		str1, err1 := stringSearch(href, `http.*.zip`)
-		str2, err2 := stringSearch(text, `[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}`)
-		if err1 != nil && err2 != nil {
-			spec = append(spec, Specification{str1, str2})
-		}
-	})
-
-	for i := 0; i < len(spec); i++ {
-		if spec[i].version == docVer {
-			return spec[i].url
-		} else {
-			continue
-		}
-	}
-	return ""
 }
 
 // --------------------------------------------------

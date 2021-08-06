@@ -58,7 +58,7 @@ func fileUnzip(filePath string) error {
         }
         defer rc.Close()
 
-        path := filepath.Join(getSeparate(), f.Name)
+        path := filepath.Join(getHomedir() + getSeparate(), f.Name)
         if f.FileInfo().IsDir() {
             os.MkdirAll(path, f.Mode())
 
@@ -145,7 +145,7 @@ type value struct {
 func createCacheFile(docNum string, spec []Specification) {
     cache := cache{
         YamlVersion: 2,
-        Title:       "3GPP Document " + docNum,
+        Title:       "\"3GPP Document " + docNum + "\"",
         CreateDate:  getNowTime(),
         Value:       valueStructCreation(docNum, spec),
     }
