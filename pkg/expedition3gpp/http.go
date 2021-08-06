@@ -3,13 +3,11 @@ package expedition3gpp
 import (
 	"os"
 	"io"
-	"log"
 	"errors"
 	"strings"
 	"regexp"
 	"net/http"
 
-	"gopkg.in/yaml.v2"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -92,74 +90,4 @@ func notationAdjustment(docNum string) string {
 		return strings.Replace(docNum, ".", "", 1)
 	}
 	return docNum
-}
-
-// --------------------------------------------------
-// Cache struct
-// --------------------------------------------------
-type cacheYaml struct {
-	YamlVersion    int          `yaml:"version"`
-	Title          string       `yaml:"title"`
-	CreateDate     string       `yaml:"createDate"`
-	Value          []valueYaml  `yaml:"value"`
-}
-
-type valueYaml struct {
-	Version string `yaml:"version"`
-	Name    string `yaml:"name"`
-	Url     string `yaml:"url"`
-}
-
-type cacheFile struct {
-	name string
-}
-
-// --------------------------------------------------
-// Load cache
-// --------------------------------------------------
-func (c cacheFile) yamlLoad() cacheYaml {
-	cacheYaml := cacheYaml{}
-	b, _ := os.ReadFile(c.name)
-	yaml.Unmarshal(b, &cacheYaml)
-	return cacheYaml
-}
-
-func (c cacheFile) validateLocation() bool {
-	_, err := os.Stat(c.name)
-	return err == nil
-}
-
-func getCacheValue(d string) cacheYaml {
-	fp := getHomedir() + getSeparate() + d + ".yaml"
-	cf := cacheFile{name: fp}
-	if !(cf.validateLocation()) {
-		os.Exit(0)
-	}
-	return cf.yamlLoad()
-}
-
-// --------------------------------------------------
-// Create cache
-// --------------------------------------------------
-func (c cache) createYaml(fp string) {
-	f, err := os.OpenFile(fp, os.O_WRONLY|os.O_CREATE, 0664)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	d := yaml.NewEncoder(f)
-	if err := d.Encode(&c); err != nil {
-		log.Fatal(err)
-	}
-	defer d.Close()
-}
-
-func checkYaml(d string) (string, bool) {
-	fp := getHomedir() + getSeparate() + d + ".yaml"
-	cf := cacheFile{name: fp}
-	if cf.validateLocation() {
-		return "", false
-	}
-	return fp ,true
 }
