@@ -10,10 +10,26 @@ import (
 )
 
 // --------------------------------------------------
+// File Struct
+// --------------------------------------------------
+// /home/testusr/xx.xxxx.zip
+type saveLocation struct {
+	path string
+}
+
+// --------------------------------------------------
+// File Exist check
+// --------------------------------------------------
+func (s saveLocation) validateLocation() bool {
+	_, err := os.Stat(s.path)
+	return err == nil
+}
+
+// --------------------------------------------------
 // File Remove
 // --------------------------------------------------
-func fileRemove(filePath string) error {
-	if err := os.Remove(filePath); err != nil {
+func (s saveLocation) fileRemove() error {
+	if err := os.Remove(s.path); err != nil {
 		return err
 	}
 	return nil
@@ -22,8 +38,8 @@ func fileRemove(filePath string) error {
 // --------------------------------------------------
 // File Un zip
 // --------------------------------------------------
-func fileUnzip(filePath string) error {
-    r, err := zip.OpenReader(filePath)
+func (s saveLocation) fileUnzip() error {
+    r, err := zip.OpenReader(s.path)
     if err != nil {
         return err
     }

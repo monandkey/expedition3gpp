@@ -137,16 +137,16 @@ func RunExpedition3gpp(config *Config) error {
 			return errors.New("The path specified is not correct.")
 		}
 
-		a := archiveUrl{url: *dstUrl}
+		a := setArchiveUrl(*dstUrl)
 		if err := a.downloadDocument(filePath.path); err != nil {
 			return err
 		}
 
-		if err := fileUnzip(filePath.path); err != nil {
+		if err := filePath.fileUnzip(); err != nil {
 			return err
 		}
 
-		if err := fileRemove(filePath.path); err != nil {
+		if err := filePath.fileRemove(); err != nil {
 			return err
 		}
 	}

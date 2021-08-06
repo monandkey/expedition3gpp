@@ -20,15 +20,6 @@ type archiveUrl struct {
 	url string
 }
 
-type saveLocation struct {
-	path string
-}
-
-func (s saveLocation) validateLocation() bool {
-	_, err := os.Stat(s.path)
-	return err == nil
-}
-
 func (a archiveUrl) downloadDocument(f string) error {
 	resp, err := http.Get(a.url)
 	if err != nil {
@@ -44,6 +35,11 @@ func (a archiveUrl) downloadDocument(f string) error {
 
 	_, err = io.Copy(out, resp.Body)
 	return err
+}
+
+func setArchiveUrl(url string) archiveUrl {
+	a := archiveUrl{url: url}
+	return a
 }
 
 // --------------------------------------------------
