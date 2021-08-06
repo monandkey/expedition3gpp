@@ -107,7 +107,7 @@ func RunExpedition3gpp(config *Config) error {
 		| tpppYaml.validateLocation | false |
 		+---------------------------+-------+
 	*/
-	if config.DocumentNumber != "" && config.DocumentVersion != && !(tpppYaml.validateLocation()) {
+	if config.DocumentNumber != "" && config.DocumentVersion != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
 		spec := getHTMLContents(srcUrl)
 		var dstUrl *string

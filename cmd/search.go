@@ -22,7 +22,7 @@ func init() {
 
 	params := params{
 		documentNumber:  "",
-		documentVersion: "",	
+		documentVersion: "",
 		outputPath:      "",
 		cache:           false,
 	}
