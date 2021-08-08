@@ -134,7 +134,6 @@ func RunExpedition3gpp(config *Config) error {
 		if cp.CacheEnable {
 			createCacheFile(config.DocumentNumber, spec)
 		}
-	}
 
 	/*
 		+---------------------------+-------+
@@ -144,7 +143,7 @@ func RunExpedition3gpp(config *Config) error {
 		| tpppYaml.validateLocation | true  |
 		+---------------------------+-------+
 	*/
-	if config.DocumentNumber != "" && tpppYaml.validateLocation() {
+	} else if config.DocumentNumber != "" && tpppYaml.validateLocation() {
 		cy := getCacheValue(config.DocumentNumber)
 
 		var verNum string
