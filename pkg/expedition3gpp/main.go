@@ -1,59 +1,200 @@
 package expedition3gpp
 
 import (
-	"log"
 	"fmt"
+	"errors"
 	"regexp"
 )
 
 type Config struct {
-	DocumentNumber string
+	DocumentNumber  string
 	DocumentVersion string
-	OutputPath string
-	Cache bool
+	OutputPath      string
+	Cache           bool
 }
 
-func showUrlList_useNumber(config *Config) error {
-	srcUrl := CreateUrl(config.DocumentNumber)
-	GetPage(srcUrl)
-	return nil
+// --------------------------------------------------
+// Search command method
+// --------------------------------------------------
+func SearchExpedition3gpp(config *Config) error {
+	// Assumption to be executed only the first time.
+	// Runs if the config file does not exist.
+	if ExistInitConfig() {
+		initConfig := InitConfig{
+			StrageLocation:     "HOMEDIR",
+			CacheEnable:        true,
+			CacheRetentionTime: 14400,
+			CacheLocation:      "HOMEDIR",
+		}
+		InitializeConfig(&initConfig)
+	}
+
+	cp := getConfigParameter()
+	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
+
+	/*
+		+---------------------------+-------+
+		| Parameter                 | value |
+		+---------------------------+-------+
+		| config.DocumentNumber     | xxxxx |
+		| tpppYaml.validateLocation | false |
+		+---------------------------+-------+
+	*/
+	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
+		srcUrl := createUrl(config.DocumentNumber)
+		spec := getHTMLContents(srcUrl)
+
+		if config.DocumentVersion == "" {
+			formatOutput(spec)
+		}
+
+		if config.DocumentVersion != "" {
+			formatOutputOneVersion(spec, config.DocumentVersion)
+		}
+
+		if cp.CacheEnable {
+			createCacheFile(config.DocumentNumber, spec)
+		}
+		return nil
+	}
+
+	/*
+		+---------------------------+-------+
+		| Parameter                 | value |
+		+---------------------------+-------+
+		| config.DocumentNumber     | xxxxx |
+		| tpppYaml.validateLocation | true  |
+		+---------------------------+-------+
+	*/
+	if config.DocumentNumber != "" && tpppYaml.validateLocation() {
+		cy := getCacheValue(config.DocumentNumber)
+
+		if config.DocumentVersion == "" {
+			formatOutputYaml(cy)
+		}
+
+		if config.DocumentVersion != "" {
+			formatOutputYamlOneVersion(cy, config.DocumentVersion)
+		}
+		return nil
+	}
+	return errors.New("Assume no error here.")
 }
 
-func getUrlContnts(config *Config) error {
-	srcUrl := CreateUrl(config.DocumentNumber)
+// --------------------------------------------------
+// Download command method
+// --------------------------------------------------
+func RunExpedition3gpp(config *Config) error {
+	// Assumption to be executed only the first time.
+	// Runs if the config file does not exist.
+	if ExistInitConfig() {
+		initConfig := InitConfig{
+			StrageLocation:     "HOMEDIR",
+			CacheEnable:        true,
+			CacheRetentionTime: 14400,
+			CacheLocation:      "HOMEDIR",
+		}
+		InitializeConfig(&initConfig)
+	}
 
-	if dstUrl := GetDstUrl(srcUrl, config.DocumentVersion); dstUrl == "0" {
-		fmt.Println("The relevant version does not exist.")
+	cp := getConfigParameter()
+	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
+	var dstUrl *string
 
-	} else {
-		reString := config.DocumentNumber + `-.*zip`
-		re := regexp.MustCompile(reString)
-		searchResult := re.FindAllStringSubmatch(dstUrl, -1)
-		filePath := "./" + searchResult[0][0]
+	/*
+		+---------------------------+-------+
+		| Parameter                 | value |
+		+---------------------------+-------+
+		| config.DocumentNumber     | xxxxx |
+		| tpppYaml.validateLocation | false |
+		+---------------------------+-------+
+	*/
+	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
+		srcUrl := createUrl(config.DocumentNumber)
+		spec := getHTMLContents(srcUrl)
 
-		if err := TargetDownload(filePath, dstUrl); err != nil {
-			panic(err)
+		var verNum string
+		if config.DocumentVersion == "" {
+			formatOutput(spec)
+			fmt.Printf("Please specify the version you want to download. : ")
+			fmt.Scan(&verNum)
+		}
 
-		} else {
-			if err := FileUnzip(filePath); err != nil {
-				log.Fatal(err)
+		for i, _ := range spec {
+			if spec[i].version == config.DocumentVersion || spec[i].version == verNum {
+				dstUrl = &spec[i].url
+				break
+			}
 
-			} else {
-				if err := FileRemove(filePath); err != nil {
-					log.Fatal(err)
-				}
+			if i + 1 == len(spec) {
+				return errors.New("The relevant version does not exist.")
 			}
 		}
-	}
-	return nil
-}
+	
+		if cp.CacheEnable {
+			createCacheFile(config.DocumentNumber, spec)
+		}
 
-func RunExpedition3gpp(config *Config) error {
-	if config.DocumentNumber != "default" && config.DocumentVersion == "default" {
-		showUrlList_useNumber(config)
+	/*
+		+---------------------------+-------+
+		| Parameter                 | value |
+		+---------------------------+-------+
+		| config.DocumentNumber     | xxxxx |
+		| tpppYaml.validateLocation | true  |
+		+---------------------------+-------+
+	*/
+	} else if config.DocumentNumber != "" && tpppYaml.validateLocation() {
+		cy := getCacheValue(config.DocumentNumber)
 
-	} else if config.DocumentNumber != "default" && config.DocumentVersion != "default" {
-		getUrlContnts(config)
+		var verNum string
+		if config.DocumentVersion == "" {
+			formatOutputYaml(cy)
+			fmt.Printf("Please specify the version you want to download. : ")
+			fmt.Scan(&verNum)
+		}
+
+		for i, _ := range cy.Value {
+			if cy.Value[i].Version == config.DocumentVersion || cy.Value[i].Version == verNum {
+				dstUrl = &cy.Value[i].Url
+				break
+			}
+
+			if i + 1 == len(cy.Value) {
+				return errors.New("The relevant version does not exist.")
+			}
+		}
+
+	} else {
+		return errors.New("Func : RunExpedition3gpp : An unexpected error has occurred.")
 	}
+
+	// After
+	reString := config.DocumentNumber + `-.*zip`
+	re := regexp.MustCompile(reString)
+	searchResult := re.FindAllStringSubmatch(*dstUrl, -1)
+
+	if len(searchResult) == 0 {
+		return errors.New("searchResult is empty")
+	}
+
+	filePath := setSaveLocation(getHomedir() + getSeparate() + searchResult[0][0])
+
+	if filePath.validateLocation() {
+		return errors.New("The path specified is not correct.")
+	}
+
+	a := setArchiveUrl(*dstUrl)
+	if err := a.downloadDocument(filePath.path); err != nil {
+		return err
+	}
+
+	if err := filePath.fileUnzip(); err != nil {
+		return err
+	}
+
+	if err := filePath.fileRemove(); err != nil {
+		return err
+	}
+
 	return nil
 }
