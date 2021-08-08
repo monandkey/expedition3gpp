@@ -33,10 +33,6 @@ func init() {
 			return errors.New("Specify the document number.")
 		}
 
-		if params.documentVersion == "" {
-			return errors.New("Specify the document version.")
-		}
-
 		config := expedition3gpp.Config{
 			DocumentNumber:  params.documentNumber,
 			DocumentVersion: params.documentVersion,

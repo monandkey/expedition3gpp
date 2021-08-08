@@ -1,6 +1,7 @@
 package expedition3gpp
 
 import (
+	"fmt"
 	"errors"
 	"regexp"
 )
@@ -29,7 +30,7 @@ func SearchExpedition3gpp(config *Config) error {
 	}
 
 	cp := getConfigParameter()
-	tpppYaml := saveLocation{path: getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml"}
+	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
 
 	/*
 		+---------------------------+-------+
@@ -96,8 +97,9 @@ func RunExpedition3gpp(config *Config) error {
 		InitializeConfig(&initConfig)
 	}
 
-	// cp := getConfigParameter()
-	tpppYaml := saveLocation{path: getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml"}
+	cp := getConfigParameter()
+	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
+	var dstUrl *string
 
 	/*
 		+---------------------------+-------+
@@ -107,13 +109,19 @@ func RunExpedition3gpp(config *Config) error {
 		| tpppYaml.validateLocation | false |
 		+---------------------------+-------+
 	*/
-	if config.DocumentNumber != "" && config.DocumentVersion != "" && !(tpppYaml.validateLocation()) {
+	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
 		spec := getHTMLContents(srcUrl)
-		var dstUrl *string
+
+		var verNum string
+		if config.DocumentVersion == "" {
+			formatOutput(spec)
+			fmt.Printf("Please specify the version you want to download. : ")
+			fmt.Scan(&verNum)
+		}
 
 		for i, _ := range spec {
-			if spec[i].version == config.DocumentVersion {
+			if spec[i].version == config.DocumentVersion || spec[i].version == verNum {
 				dstUrl = &spec[i].url
 				break
 			}
@@ -122,33 +130,72 @@ func RunExpedition3gpp(config *Config) error {
 				return errors.New("The relevant version does not exist.")
 			}
 		}
-
-		reString := config.DocumentNumber + `-.*zip`
-		re := regexp.MustCompile(reString)
-		searchResult := re.FindAllStringSubmatch(*dstUrl, -1)
-
-		if len(searchResult) == 0 {
-			return errors.New("searchResult is empty")
-		}
-
-		filePath := saveLocation{path: getHomedir() + getSeparate() + searchResult[0][0]}
-
-		if filePath.validateLocation() {
-			return errors.New("The path specified is not correct.")
-		}
-
-		a := setArchiveUrl(*dstUrl)
-		if err := a.downloadDocument(filePath.path); err != nil {
-			return err
-		}
-
-		if err := filePath.fileUnzip(); err != nil {
-			return err
-		}
-
-		if err := filePath.fileRemove(); err != nil {
-			return err
+	
+		if cp.CacheEnable {
+			createCacheFile(config.DocumentNumber, spec)
 		}
 	}
+
+	/*
+		+---------------------------+-------+
+		| Parameter                 | value |
+		+---------------------------+-------+
+		| config.DocumentNumber     | xxxxx |
+		| tpppYaml.validateLocation | true  |
+		+---------------------------+-------+
+	*/
+	if config.DocumentNumber != "" && tpppYaml.validateLocation() {
+		cy := getCacheValue(config.DocumentNumber)
+
+		var verNum string
+		if config.DocumentVersion == "" {
+			formatOutputYaml(cy)
+			fmt.Printf("Please specify the version you want to download. : ")
+			fmt.Scan(&verNum)
+		}
+
+		for i, _ := range cy.Value {
+			if cy.Value[i].Version == config.DocumentVersion || cy.Value[i].Version == verNum {
+				dstUrl = &cy.Value[i].Url
+				break
+			}
+
+			if i + 1 == len(cy.Value) {
+				return errors.New("The relevant version does not exist.")
+			}
+		}
+
+	} else {
+		return errors.New("Func : RunExpedition3gpp : An unexpected error has occurred.")
+	}
+
+	// After
+	reString := config.DocumentNumber + `-.*zip`
+	re := regexp.MustCompile(reString)
+	searchResult := re.FindAllStringSubmatch(*dstUrl, -1)
+
+	if len(searchResult) == 0 {
+		return errors.New("searchResult is empty")
+	}
+
+	filePath := setSaveLocation(getHomedir() + getSeparate() + searchResult[0][0])
+
+	if filePath.validateLocation() {
+		return errors.New("The path specified is not correct.")
+	}
+
+	a := setArchiveUrl(*dstUrl)
+	if err := a.downloadDocument(filePath.path); err != nil {
+		return err
+	}
+
+	if err := filePath.fileUnzip(); err != nil {
+		return err
+	}
+
+	if err := filePath.fileRemove(); err != nil {
+		return err
+	}
+
 	return nil
 }

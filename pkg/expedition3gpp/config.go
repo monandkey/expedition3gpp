@@ -145,5 +145,5 @@ func ExistInitConfig() bool {
 	}
 	f := ds.homedir + ds.separate + ds.filename
 	_, err := os.Stat(f)
-	return os.IsNotExist(err)
+	return err != nil
 }
