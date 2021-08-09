@@ -81,6 +81,29 @@ func (s saveLocation) fileUnzip() error {
 }
 
 // --------------------------------------------------
+// Strage Location
+// --------------------------------------------------
+func strageLocation(d string) string {
+	cp := getConfigParameter()
+	if cp.StrageLocation == "HOMEDIR" {
+		s := getHomedir() + getSeparate() + d
+		return s
+	
+	} else if cp.StrageLocation != "HOMEDIR" && strings.Contains(cp.StrageLocation, getSeparate()) {
+		s := cp.StrageLocation + d
+		return s
+
+	} else if cp.StrageLocation != "HOMEDIR" && !(strings.Contains(cp.StrageLocation, getSeparate())) {
+		s := cp.StrageLocation + getSeparate() + d
+		return s
+
+	}
+	fmt.Println("The specified path does not exist.")
+	os.Exit(0)
+	return ""
+}
+
+// --------------------------------------------------
 // Cache struct
 // --------------------------------------------------
 type cacheYaml struct {
