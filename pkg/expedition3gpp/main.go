@@ -80,6 +80,7 @@ func SearchExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && tpppYaml.validateLocation() {
 		cy := getCacheValue(config.DocumentNumber)
+		cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime)
 
 		if config.DocumentVersion == "" {
 			formatOutputYaml(cy)
