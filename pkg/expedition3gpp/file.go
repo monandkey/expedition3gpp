@@ -109,7 +109,7 @@ func strageLocation(d string) string {
 type cacheYaml struct {
 	YamlVersion    int          `yaml:"version"`
 	Title          string       `yaml:"title"`
-	CreateDate     string       `yaml:"createDate"`
+	CreateDate     string       `yaml:"createdate"`
 	Value          []valueYaml  `yaml:"value"`
 }
 
@@ -145,6 +145,29 @@ func getCacheValue(d string) cacheYaml {
 		os.Exit(0)
 	}
 	return cf.yamlLoad()
+}
+
+func cacheTimeVerification(ct string, ci int) bool {
+	layout := "2006-01-02 15:04:05"
+	t1, _ := time.Parse(layout, ct)
+	t2 := t1.AddDate(0, 0, ci/1440)
+
+	/*
+		+------------+------------+-------+
+		| t1         | t2         | bool  |
+		+------------+------------+-------+
+		| 2021-08-10 | 2021-08-11 | False |
+		| 2021-08-10 | 2021-08-09 | True  |
+		+------------+------------+-------+
+	*/
+	if t1.Before(t2) {
+		return false
+	
+	} else {
+		return true
+	}
+
+	return nil
 }
 
 // --------------------------------------------------
