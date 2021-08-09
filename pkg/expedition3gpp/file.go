@@ -3,13 +3,11 @@ package expedition3gpp
 import (
 	"io"
 	"os"
-	"fmt"
 	"log"
 	"time"
 	"archive/zip"
 	"path/filepath"
 	"gopkg.in/yaml.v2"
-	"github.com/fatih/color"
 )
 
 // --------------------------------------------------
@@ -78,53 +76,6 @@ func (s saveLocation) fileUnzip() error {
         }
     }
     return nil
-}
-
-// --------------------------------------------------
-// Output
-// --------------------------------------------------
-func formatOutput(spec []Specification) {
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	fmt.Println("| No. | Version | URL                                                                              |")
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	for i := 0; i < len(spec); i++ {
-		fmt.Printf("| %3d | %7s | %-89s |\n", i + 1, spec[i].version, color.HiCyanString(spec[i].url))
-	}
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-}
-
-func formatOutputOneVersion(spec []Specification, version string) {
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	fmt.Println("| No. | Version | URL                                                                              |")
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	for i := 0; i < len(spec); i++ {
-        if spec[i].version == version {
-            fmt.Printf("| %3d | %7s | %-89s |\n", 1, spec[i].version, color.HiCyanString(spec[i].url))
-        }
-	}
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-}
-
-func formatOutputYaml(cy cacheYaml) {
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	fmt.Println("| No. | Version | URL                                                                              |")
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	for i := 0; i < len(cy.Value); i++ {
-		fmt.Printf("| %3d | %7s | %-89s |\n", i + 1, cy.Value[i].Version, color.HiCyanString(cy.Value[i].Url))
-	}
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-}
-
-func formatOutputYamlOneVersion(cy cacheYaml, version string) {
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	fmt.Println("| No. | Version | URL                                                                              |")
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
-	for i := 0; i < len(cy.Value); i++ {
-        if cy.Value[i].Version == version {
-            fmt.Printf("| %3d | %7s | %-89s |\n", 1, cy.Value[i].Version, color.HiCyanString(cy.Value[i].Url))
-        }
-	}
-	fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 }
 
 // --------------------------------------------------
