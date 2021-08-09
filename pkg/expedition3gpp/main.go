@@ -42,7 +42,15 @@ func SearchExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
-		spec := getHTMLContents(srcUrl)
+		c := make(chan []Specification)
+		cancel := make(chan struct{})
+
+		go getHTMLContents(srcUrl, c)
+		go outpuhtNowLoading(cancel)
+
+		spec := <- c
+		close(cancel)
+		fmt.Println("\rFinished Download.\n")
 
 		if config.DocumentVersion == "" {
 			formatOutput(spec)
@@ -111,7 +119,15 @@ func RunExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
-		spec := getHTMLContents(srcUrl)
+		c := make(chan []Specification)
+		cancel := make(chan struct{})
+
+		go getHTMLContents(srcUrl, c)
+		go outpuhtNowLoading(cancel)
+
+		spec := <- c
+		close(cancel)
+		fmt.Println("\rFinished Download.\n")
 
 		var verNum string
 		if config.DocumentVersion == "" {

@@ -60,7 +60,7 @@ type Specification struct {
 // --------------------------------------------------
 // Get HTML
 // --------------------------------------------------
-func getHTMLContents(url string) []Specification {
+func getHTMLContents(url string, c chan []Specification) {
 	spec := make([]Specification, 0)
 
 	doc, _ := goquery.NewDocument(url)
@@ -74,7 +74,8 @@ func getHTMLContents(url string) []Specification {
 			spec = append(spec, Specification{str1, str2})
 		}
 	})
-	return spec
+	// return spec
+	c <- spec
 }
 
 // --------------------------------------------------
