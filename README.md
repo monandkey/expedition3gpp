@@ -21,7 +21,7 @@ $ echo "windows"
 $ wget https://github.com/monandkey/expedition3gpp/files/6824169/expedition3gpp-windows.zip
 ```
 
-### BUild
+### Build
 
 ```bash
 $ cd expedition3gpp

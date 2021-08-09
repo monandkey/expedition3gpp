@@ -30,8 +30,8 @@ func SearchExpedition3gpp(config *Config) error {
 	}
 
 	cp := getConfigParameter()
-	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
-
+	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
+	
 	/*
 		+---------------------------+-------+
 		| Parameter                 | value |
@@ -50,6 +50,10 @@ func SearchExpedition3gpp(config *Config) error {
 
 		spec := <- c
 		close(cancel)
+
+		if len(spec) == 0 {
+			return errors.New("\rThe specified document does not exist.     ")
+		}
 		fmt.Println("\rFinished Download.\n")
 
 		if config.DocumentVersion == "" {
@@ -106,7 +110,7 @@ func RunExpedition3gpp(config *Config) error {
 	}
 
 	cp := getConfigParameter()
-	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
+	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
 	var dstUrl *string
 
 	/*
@@ -127,6 +131,10 @@ func RunExpedition3gpp(config *Config) error {
 
 		spec := <- c
 		close(cancel)
+
+		if len(spec) == 0 {
+			return errors.New("\rThe specified document does not exist.     ")
+		}
 		fmt.Println("\rFinished Download.\n")
 
 		var verNum string
@@ -193,7 +201,7 @@ func RunExpedition3gpp(config *Config) error {
 		return errors.New("searchResult is empty")
 	}
 
-	filePath := setSaveLocation(getHomedir() + getSeparate() + searchResult[0][0])
+	filePath := setSaveLocation(strageLocation(searchResult[0][0]))
 
 	if filePath.validateLocation() {
 		return errors.New("The path specified is not correct.")
