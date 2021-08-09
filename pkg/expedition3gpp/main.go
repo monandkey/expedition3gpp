@@ -50,6 +50,10 @@ func SearchExpedition3gpp(config *Config) error {
 
 		spec := <- c
 		close(cancel)
+
+		if len(spec) == 0 {
+			return errors.New("\rThe specified document does not exist.     ")
+		}
 		fmt.Println("\rFinished Download.\n")
 
 		if config.DocumentVersion == "" {
@@ -127,6 +131,10 @@ func RunExpedition3gpp(config *Config) error {
 
 		spec := <- c
 		close(cancel)
+
+		if len(spec) == 0 {
+			return errors.New("\rThe specified document does not exist.     ")
+		}
 		fmt.Println("\rFinished Download.\n")
 
 		var verNum string

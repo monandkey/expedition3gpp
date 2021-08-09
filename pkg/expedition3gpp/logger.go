@@ -131,16 +131,18 @@ func dot(p int) string {
 }
 
 func outpuhtNowLoading(cancel chan struct{}) {
-    cnt := 10000000000
-	select {
+    cnt := 1000000000
+	i := 1
+	for {
+		select {
 		case <- cancel:
 			return
 		default:
-			for i := 1; i <= cnt; i++ {
-				if i%(cnt/100) == 0 {
-					p := i / (cnt / 100)
-					fmt.Printf("\r[ %s ] Now Loading %-10s", mark(p), dot(p))
-				}		
+			if i%(cnt/100) == 0 {
+				p := i / (cnt / 100)
+				fmt.Printf("\r[ %s ] Now Loading %-10s", mark(p), dot(p))
 			}
-    }
+			i++
+		}
+	}
 }
