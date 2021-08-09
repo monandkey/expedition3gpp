@@ -4,7 +4,9 @@ import (
 	"io"
 	"os"
 	"log"
+	"fmt"
 	"time"
+	"strings"
 	"archive/zip"
 	"path/filepath"
 	"gopkg.in/yaml.v2"
@@ -114,7 +116,7 @@ func (c cacheFile) validateLocation() bool {
 }
 
 func getCacheValue(d string) cacheYaml {
-	fp := getHomedir() + getSeparate() + d + ".yaml"
+	fp := cacheLocation(d)
 	cf := cacheFile{name: fp}
 	if !(cf.validateLocation()) {
 		os.Exit(0)
@@ -140,12 +142,32 @@ func (c cache) createYaml(fp string) {
 }
 
 func checkYaml(d string) (string, bool) {
-	fp := getHomedir() + getSeparate() + d + ".yaml"
+	fp := cacheLocation(d)
 	cf := cacheFile{name: fp}
 	if cf.validateLocation() {
 		return "", false
 	}
 	return fp ,true
+}
+
+func cacheLocation(d string) string {
+	cp := getConfigParameter()
+	if cp.CacheLocation == "HOMEDIR" {
+		s := getHomedir() + getSeparate() + ".cache" + getSeparate() + d + ".yaml"
+		return s
+	
+	} else if cp.CacheLocation != "HOMEDIR" && strings.Contains(cp.CacheLocation, getSeparate()) {
+		s := cp.CacheLocation + ".cache" + getSeparate() + d + ".yaml"
+		return s
+
+	} else if cp.CacheLocation != "HOMEDIR" && !(strings.Contains(cp.CacheLocation, getSeparate())) {
+		s := cp.CacheLocation + getSeparate() + ".cache" + getSeparate() + d + ".yaml"
+		return s
+
+	}
+	fmt.Println("The specified path does not exist.")
+	os.Exit(0)
+	return ""
 }
 
 // --------------------------------------------------

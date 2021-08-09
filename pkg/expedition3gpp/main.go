@@ -30,8 +30,8 @@ func SearchExpedition3gpp(config *Config) error {
 	}
 
 	cp := getConfigParameter()
-	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
-
+	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
+	
 	/*
 		+---------------------------+-------+
 		| Parameter                 | value |
@@ -106,7 +106,7 @@ func RunExpedition3gpp(config *Config) error {
 	}
 
 	cp := getConfigParameter()
-	tpppYaml := setSaveLocation(getHomedir() + getSeparate() + notationAdjustment(config.DocumentNumber) + ".yaml")
+	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
 	var dstUrl *string
 
 	/*
