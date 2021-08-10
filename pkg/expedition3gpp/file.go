@@ -60,7 +60,18 @@ func (s saveLocation) fileUnzip() error {
         }
         defer rc.Close()
 
-        path := filepath.Join(getHomedir() + getSeparate(), f.Name)
+        cp := getConfigParameter()
+        var path string
+        if cp.StrageLocation == "HOMEDIR" {
+            path = filepath.Join(getHomedir() + getSeparate(), f.Name)
+
+        } else if cp.StrageLocation != "HOMEDIR" && strings.HasSuffix(cp.StrageLocation, getSeparate()) {
+            path = filepath.Join(cp.StrageLocation + f.Name)
+
+        } else if cp.StrageLocation != "HOMEDIR" && !(strings.HasSuffix(cp.StrageLocation, getSeparate())) {
+            path = filepath.Join(cp.StrageLocation + getSeparate() + f.Name)
+        }
+
         if f.FileInfo().IsDir() {
             os.MkdirAll(path, f.Mode())
 
@@ -89,12 +100,12 @@ func strageLocation(d string) string {
 		s := getHomedir() + getSeparate() + d
 		return s
 	
-	} else if cp.StrageLocation != "HOMEDIR" && strings.Contains(cp.StrageLocation, getSeparate()) {
+	} else if cp.StrageLocation != "HOMEDIR" && strings.HasSuffix(cp.StrageLocation, getSeparate()) {
 		s := cp.StrageLocation + d
 		return s
 
-	} else if cp.StrageLocation != "HOMEDIR" && !(strings.Contains(cp.StrageLocation, getSeparate())) {
-		s := cp.StrageLocation + getSeparate() + d
+	} else if cp.StrageLocation != "HOMEDIR" && !(strings.HasSuffix(cp.StrageLocation, getSeparate())) {
+        s := cp.StrageLocation + getSeparate() + d
 		return s
 
 	}
