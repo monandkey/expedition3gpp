@@ -32,9 +32,9 @@ func SearchExpedition3gpp(config *Config) error {
 	cp := getConfigParameter()
 	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
 
-	if tpppYaml.validateLocation() {
+	if tpppYaml.validateLocation() || config.Cache {
 		cy := getCacheValue(config.DocumentNumber)
-		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) {
+		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) || config.Cache {
 			if err := tpppYaml.fileRemove(); err != nil {
 				return err
 			}
@@ -122,9 +122,9 @@ func RunExpedition3gpp(config *Config) error {
 	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
 	var dstUrl *string
 
-	if tpppYaml.validateLocation() {
+	if tpppYaml.validateLocation() || config.Cache {
 		cy := getCacheValue(config.DocumentNumber)
-		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) {
+		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) || config.Cache {
 			if err := tpppYaml.fileRemove(); err != nil {
 				return err
 			}
