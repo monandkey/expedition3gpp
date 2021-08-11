@@ -219,7 +219,14 @@ func RunExpedition3gpp(config *Config) error {
 		return errors.New("searchResult is empty")
 	}
 
-	filePath := setSaveLocation(strageLocation(searchResult[0][0]))
+	var filePath saveLocation
+
+	if config.OutputPath == "" {
+		filePath = setSaveLocation(strageLocation(searchResult[0][0]))
+	
+	} else {
+		filePath = setSaveLocation(outputLocation(config.OutputPath, searchResult[0][0]))
+	}
 
 	if filePath.validateLocation() {
 		return errors.New("The path specified is not correct.")

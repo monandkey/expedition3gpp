@@ -6,6 +6,7 @@ import (
 	"log"
 	"fmt"
 	"time"
+	"regexp"
 	"strings"
 	"archive/zip"
 	"path/filepath"
@@ -60,17 +61,8 @@ func (s saveLocation) fileUnzip() error {
         }
         defer rc.Close()
 
-        cp := getConfigParameter()
-        var path string
-        if cp.StrageLocation == "HOMEDIR" {
-            path = filepath.Join(getHomedir() + getSeparate(), f.Name)
-
-        } else if cp.StrageLocation != "HOMEDIR" && strings.HasSuffix(cp.StrageLocation, getSeparate()) {
-            path = filepath.Join(cp.StrageLocation + f.Name)
-
-        } else if cp.StrageLocation != "HOMEDIR" && !(strings.HasSuffix(cp.StrageLocation, getSeparate())) {
-            path = filepath.Join(cp.StrageLocation + getSeparate() + f.Name)
-        }
+		rep := regexp.MustCompile(`[0-9]{5}-...\.zip`)
+		path := filepath.Join(rep.ReplaceAllString(s.path, f.Name))
 
         if f.FileInfo().IsDir() {
             os.MkdirAll(path, f.Mode())
@@ -108,6 +100,20 @@ func strageLocation(d string) string {
         s := cp.StrageLocation + getSeparate() + d
 		return s
 
+	}
+	fmt.Println("The specified path does not exist.")
+	os.Exit(0)
+	return ""
+}
+
+func outputLocation(o string, d string) string {
+	if strings.HasSuffix(o, getSeparate()) {
+		s := o + d
+		return s
+	
+	} else if !(strings.HasSuffix(o, getSeparate())) {
+		s := o + getSeparate() + d
+		return s
 	}
 	fmt.Println("The specified path does not exist.")
 	os.Exit(0)
