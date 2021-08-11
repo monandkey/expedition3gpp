@@ -22,6 +22,7 @@ func init() {
 
 	downloadCmd.Flags().StringVar(&params.documentNumber, "document-number", params.documentNumber, "3GPP Document Number")
 	downloadCmd.Flags().StringVar(&params.documentVersion, "document-version", params.documentVersion, "3GPP Document Version")
+	downloadCmd.Flags().StringVar(&params.outputPath, "output-path", params.outputPath, "Specify the output location of the file")
 	downloadCmd.Flags().BoolVar(&params.cache, "no-cache", params.cache, "Not using cache")
 
 	downloadCmd.RunE = func(cmd *cobra.Command, args []string) error {

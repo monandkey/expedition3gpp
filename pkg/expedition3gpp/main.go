@@ -31,6 +31,15 @@ func SearchExpedition3gpp(config *Config) error {
 
 	cp := getConfigParameter()
 	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
+
+	if tpppYaml.validateLocation() || config.Cache {
+		cy := getCacheValue(config.DocumentNumber)
+		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) || config.Cache {
+			if err := tpppYaml.fileRemove(); err != nil {
+				return err
+			}
+		}
+	}
 	
 	/*
 		+---------------------------+-------+
@@ -80,7 +89,6 @@ func SearchExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && tpppYaml.validateLocation() {
 		cy := getCacheValue(config.DocumentNumber)
-		cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime)
 
 		if config.DocumentVersion == "" {
 			formatOutputYaml(cy)
@@ -113,6 +121,15 @@ func RunExpedition3gpp(config *Config) error {
 	cp := getConfigParameter()
 	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
 	var dstUrl *string
+
+	if tpppYaml.validateLocation() || config.Cache {
+		cy := getCacheValue(config.DocumentNumber)
+		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) || config.Cache {
+			if err := tpppYaml.fileRemove(); err != nil {
+				return err
+			}
+		}
+	}
 
 	/*
 		+---------------------------+-------+
@@ -202,7 +219,14 @@ func RunExpedition3gpp(config *Config) error {
 		return errors.New("searchResult is empty")
 	}
 
-	filePath := setSaveLocation(strageLocation(searchResult[0][0]))
+	var filePath saveLocation
+
+	if config.OutputPath == "" {
+		filePath = setSaveLocation(strageLocation(searchResult[0][0]))
+	
+	} else {
+		filePath = setSaveLocation(outputLocation(config.OutputPath, searchResult[0][0]))
+	}
 
 	if filePath.validateLocation() {
 		return errors.New("The path specified is not correct.")
