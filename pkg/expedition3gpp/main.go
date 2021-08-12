@@ -55,7 +55,7 @@ func SearchExpedition3gpp(config *Config) error {
 		c := make(chan []specDocInfo)
 		cancel := make(chan struct{})
 
-		go getHTMLContents(srcUrl, c)
+		go fetch3gppPage(srcUrl, c)
 		go displayLoading(cancel)
 
 		spec := <- c
@@ -144,7 +144,7 @@ func RunExpedition3gpp(config *Config) error {
 		c := make(chan []specDocInfo)
 		cancel := make(chan struct{})
 
-		go getHTMLContents(srcUrl, c)
+		go fetch3gppPage(srcUrl, c)
 		go displayLoading(cancel)
 
 		spec := <- c

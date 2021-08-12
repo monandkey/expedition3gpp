@@ -60,7 +60,7 @@ type specDocInfo struct {
 // --------------------------------------------------
 // Get HTML
 // --------------------------------------------------
-func getHTMLContents(url string, c chan []specDocInfo) {
+func fetch3gppPage(url string, c chan []specDocInfo) {
 	spec := make([]specDocInfo, 0)
 
 	doc, _ := goquery.NewDocument(url)
