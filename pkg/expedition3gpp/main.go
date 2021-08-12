@@ -52,10 +52,10 @@ func SearchExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
-		c := make(chan []Specification)
+		c := make(chan []specDocInfo)
 		cancel := make(chan struct{})
 
-		go getHTMLContents(srcUrl, c)
+		go fetch3gppPage(srcUrl, c)
 		go displayLoading(cancel)
 
 		spec := <- c
@@ -64,7 +64,7 @@ func SearchExpedition3gpp(config *Config) error {
 		if len(spec) == 0 {
 			return errors.New("\rThe specified document does not exist.     ")
 		}
-		fmt.Println("\rFinished Download.\n")
+		fmt.Println("\r[OK] Download Success.\n")
 
 		if config.DocumentVersion == "" {
 			formatOutput(spec)
@@ -120,6 +120,7 @@ func RunExpedition3gpp(config *Config) error {
 	cp := getConfigParameter()
 	tpppYaml := setSaveLocation(cacheLocation(notationAdjustment(config.DocumentNumber)))
 	var dstUrl *string
+	cancel := make(chan struct{})
 
 	if tpppYaml.validateLocation() || config.Cache {
 		cy := getCacheValue(config.DocumentNumber)
@@ -141,10 +142,9 @@ func RunExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
-		c := make(chan []Specification)
-		cancel := make(chan struct{})
+		c := make(chan []specDocInfo)
 
-		go getHTMLContents(srcUrl, c)
+		go fetch3gppPage(srcUrl, c)
 		go displayLoading(cancel)
 
 		spec := <- c
@@ -153,7 +153,7 @@ func RunExpedition3gpp(config *Config) error {
 		if len(spec) == 0 {
 			return errors.New("\rThe specified document does not exist.     ")
 		}
-		fmt.Println("\rFinished Download.\n")
+		fmt.Println("\r[OK] Download Success.\n")
 
 		var verNum string
 		if config.DocumentVersion == "" {
@@ -220,7 +220,6 @@ func RunExpedition3gpp(config *Config) error {
 	}
 
 	var filePath saveLocation
-
 	if config.OutputPath == "" {
 		filePath = setSaveLocation(strageLocation(searchResult[0][0]))
 	
@@ -232,10 +231,13 @@ func RunExpedition3gpp(config *Config) error {
 		return errors.New("The path specified is not correct.")
 	}
 
+	go displayLoading(cancel)
 	a := setArchiveUrl(*dstUrl)
 	if err := a.downloadDocument(filePath.path); err != nil {
 		return err
 	}
+	close(cancel)
+	fmt.Println("\r[OK] Download Success.\n")
 
 	if err := filePath.fileUnzip(); err != nil {
 		return err
@@ -244,6 +246,9 @@ func RunExpedition3gpp(config *Config) error {
 	if err := filePath.fileRemove(); err != nil {
 		return err
 	}
+
+	fmt.Printf("The files are stored in the following locations\n")
+	fmt.Printf("PATH: %s\n", filePath.path)
 
 	return nil
 }
