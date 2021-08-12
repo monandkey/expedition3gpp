@@ -35,7 +35,8 @@ func SearchExpedition3gpp(config *Config) error {
 	if tpppYaml.validateLocation() || config.Cache {
 		cy := getCacheValue(config.DocumentNumber)
 		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) || config.Cache {
-			if err := tpppYaml.fileRemove(); err != nil {
+			err := tpppYaml.fileRemove()
+			if err != nil {
 				return err
 			}
 		}
@@ -55,7 +56,7 @@ func SearchExpedition3gpp(config *Config) error {
 		cancel := make(chan struct{})
 
 		go getHTMLContents(srcUrl, c)
-		go outpuhtNowLoading(cancel)
+		go displayLoading(cancel)
 
 		spec := <- c
 		close(cancel)
@@ -67,9 +68,8 @@ func SearchExpedition3gpp(config *Config) error {
 
 		if config.DocumentVersion == "" {
 			formatOutput(spec)
-		}
 
-		if config.DocumentVersion != "" {
+		} else if config.DocumentVersion != "" {
 			formatOutputOneVersion(spec, config.DocumentVersion)
 		}
 
@@ -92,9 +92,8 @@ func SearchExpedition3gpp(config *Config) error {
 
 		if config.DocumentVersion == "" {
 			formatOutputYaml(cy)
-		}
 
-		if config.DocumentVersion != "" {
+		} else if config.DocumentVersion != "" {
 			formatOutputYamlOneVersion(cy, config.DocumentVersion)
 		}
 		return nil
@@ -125,7 +124,8 @@ func RunExpedition3gpp(config *Config) error {
 	if tpppYaml.validateLocation() || config.Cache {
 		cy := getCacheValue(config.DocumentNumber)
 		if cacheTimeVerification(cy.CreateDate, cp.CacheRetentionTime) || config.Cache {
-			if err := tpppYaml.fileRemove(); err != nil {
+			err := tpppYaml.fileRemove()
+			if err != nil {
 				return err
 			}
 		}
@@ -145,7 +145,7 @@ func RunExpedition3gpp(config *Config) error {
 		cancel := make(chan struct{})
 
 		go getHTMLContents(srcUrl, c)
-		go outpuhtNowLoading(cancel)
+		go displayLoading(cancel)
 
 		spec := <- c
 		close(cancel)
