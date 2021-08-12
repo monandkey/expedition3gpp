@@ -114,7 +114,7 @@ func formatOutputYamlOneVersion(cy cacheYaml, version string) {
 }
 
 // --------------------------------------------------
-// Now Loading
+// Display Downloading
 // --------------------------------------------------
 var marks = []string{"|", "/", "-", "\\"}
 
@@ -130,17 +130,18 @@ func dot(p int) string {
 	return d
 }
 
-func outpuhtNowLoading(cancel chan struct{}) {
+func displayLoading(cancel chan struct{}) {
     cnt := 1000000000
 	i := 1
 	for {
 		select {
 		case <- cancel:
 			return
+
 		default:
 			if i%(cnt/100) == 0 {
 				p := i / (cnt / 100)
-				fmt.Printf("\r[ %s ] Now Loading %-10s", mark(p), dot(p))
+				fmt.Printf("\r[ %s ] Downloading %-10s", mark(p), dot(p))
 			}
 			i++
 		}
