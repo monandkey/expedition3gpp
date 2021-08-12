@@ -52,7 +52,7 @@ func stringSearch(targetString string, reString string) (string, error) {
 	return "0", nil
 }
 
-type Specification struct {
+type specDocInfo struct {
 	url string
 	version string
 }
@@ -60,8 +60,8 @@ type Specification struct {
 // --------------------------------------------------
 // Get HTML
 // --------------------------------------------------
-func getHTMLContents(url string, c chan []Specification) {
-	spec := make([]Specification, 0)
+func getHTMLContents(url string, c chan []specDocInfo) {
+	spec := make([]specDocInfo, 0)
 
 	doc, _ := goquery.NewDocument(url)
 	doc.Find("a").Each(func(_ int, s *goquery.Selection) {
@@ -71,10 +71,9 @@ func getHTMLContents(url string, c chan []Specification) {
 		str1, err1 := stringSearch(href, `http.*.zip`)
 		str2, err2 := stringSearch(text, `[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}`)
 		if err1 != nil && err2 != nil {
-			spec = append(spec, Specification{str1, str2})
+			spec = append(spec, specDocInfo{str1, str2})
 		}
 	})
-	// return spec
 	c <- spec
 }
 

@@ -256,7 +256,7 @@ type value struct {
 	Url     string
 }
 
-func createCacheFile(docNum string, spec []Specification) {
+func createCacheFile(docNum string, spec []specDocInfo) {
     cache := cache{
         YamlVersion: 2,
         Title:       "\"3GPP Document " + docNum + "\"",
@@ -275,7 +275,7 @@ func getNowTime() string {
 	return t.Format(layout)
 }
 
-func valueStructCreation(docNum string, spec []Specification) []value {
+func valueStructCreation(docNum string, spec []specDocInfo) []value {
     values := []value{}
     for _, v := range spec {
         value := value{

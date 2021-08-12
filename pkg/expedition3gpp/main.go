@@ -52,7 +52,7 @@ func SearchExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
-		c := make(chan []Specification)
+		c := make(chan []specDocInfo)
 		cancel := make(chan struct{})
 
 		go getHTMLContents(srcUrl, c)
@@ -141,7 +141,7 @@ func RunExpedition3gpp(config *Config) error {
 	*/
 	if config.DocumentNumber != "" && !(tpppYaml.validateLocation()) {
 		srcUrl := createUrl(config.DocumentNumber)
-		c := make(chan []Specification)
+		c := make(chan []specDocInfo)
 		cancel := make(chan struct{})
 
 		go getHTMLContents(srcUrl, c)

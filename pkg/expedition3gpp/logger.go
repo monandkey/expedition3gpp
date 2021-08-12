@@ -9,7 +9,7 @@ import (
 // --------------------------------------------------
 // Output
 // --------------------------------------------------
-func formatOutput(spec []Specification) {
+func formatOutput(spec []specDocInfo) {
 	if runtime.GOOS == "windows" {
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		fmt.Println("| No. | Version | URL                                                                              |")
@@ -33,7 +33,7 @@ func formatOutput(spec []Specification) {
 	}
 }
 
-func formatOutputOneVersion(spec []Specification, version string) {
+func formatOutputOneVersion(spec []specDocInfo, version string) {
 	if runtime.GOOS == "windows" {
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		fmt.Println("| No. | Version | URL                                                                              |")
