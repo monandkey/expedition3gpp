@@ -1,15 +1,16 @@
 package expedition3gpp
 
 import (
-	"io"
-	"os"
-	"log"
+	"archive/zip"
 	"fmt"
-	"time"
+	"io"
+	"log"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
-	"archive/zip"
-	"path/filepath"
+	"time"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -48,39 +49,39 @@ func (s saveLocation) fileRemove() error {
 // File Un zip
 // --------------------------------------------------
 func (s saveLocation) fileUnzip() error {
-    r, err := zip.OpenReader(s.path)
-    if err != nil {
-        return err
-    }
-    defer r.Close()
+	r, err := zip.OpenReader(s.path)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
 
 	for _, f := range r.File {
-        rc, err := f.Open()
-        if err != nil {
-            return err
-        }
-        defer rc.Close()
+		rc, err := f.Open()
+		if err != nil {
+			return err
+		}
+		defer rc.Close()
 
 		rep := regexp.MustCompile(`[0-9]{5}-...\.zip`)
 		path := filepath.Join(rep.ReplaceAllString(s.path, f.Name))
 
-        if f.FileInfo().IsDir() {
-            os.MkdirAll(path, f.Mode())
+		if f.FileInfo().IsDir() {
+			os.MkdirAll(path, f.Mode())
 
 		} else {
-            f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-            if err != nil {
-                return err
-            }
-            defer f.Close()
+			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+			if err != nil {
+				return err
+			}
+			defer f.Close()
 
-            _, err = io.Copy(f, rc)
-            if err != nil {
-                return err
-            }
-        }
-    }
-    return nil
+			_, err = io.Copy(f, rc)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // --------------------------------------------------
@@ -91,13 +92,13 @@ func strageLocation(d string) string {
 	if cp.StrageLocation == "HOMEDIR" {
 		s := getHomedir() + getSeparate() + d
 		return s
-	
+
 	} else if cp.StrageLocation != "HOMEDIR" && strings.HasSuffix(cp.StrageLocation, getSeparate()) {
 		s := cp.StrageLocation + d
 		return s
 
 	} else if cp.StrageLocation != "HOMEDIR" && !(strings.HasSuffix(cp.StrageLocation, getSeparate())) {
-        s := cp.StrageLocation + getSeparate() + d
+		s := cp.StrageLocation + getSeparate() + d
 		return s
 
 	}
@@ -110,7 +111,7 @@ func outputLocation(o string, d string) string {
 	if strings.HasSuffix(o, getSeparate()) {
 		s := o + d
 		return s
-	
+
 	} else if !(strings.HasSuffix(o, getSeparate())) {
 		s := o + getSeparate() + d
 		return s
@@ -124,10 +125,10 @@ func outputLocation(o string, d string) string {
 // Cache struct
 // --------------------------------------------------
 type cacheYaml struct {
-	YamlVersion    int          `yaml:"version"`
-	Title          string       `yaml:"title"`
-	CreateDate     string       `yaml:"createdate"`
-	Value          []valueYaml  `yaml:"value"`
+	YamlVersion int         `yaml:"version"`
+	Title       string      `yaml:"title"`
+	CreateDate  string      `yaml:"createdate"`
+	Value       []valueYaml `yaml:"value"`
 }
 
 type valueYaml struct {
@@ -217,7 +218,7 @@ func checkYaml(d string) (string, bool) {
 	if cf.validateLocation() {
 		return "", false
 	}
-	return fp ,true
+	return fp, true
 }
 
 func cacheLocation(d string) string {
@@ -225,7 +226,7 @@ func cacheLocation(d string) string {
 	if cp.CacheLocation == "HOMEDIR" {
 		s := getHomedir() + getSeparate() + ".cache" + getSeparate() + d + ".yaml"
 		return s
-	
+
 	} else if cp.CacheLocation != "HOMEDIR" && strings.Contains(cp.CacheLocation, getSeparate()) {
 		s := cp.CacheLocation + ".cache" + getSeparate() + d + ".yaml"
 		return s
@@ -244,10 +245,10 @@ func cacheLocation(d string) string {
 // Create Cache file
 // --------------------------------------------------
 type cache struct {
-	YamlVersion    int
-	Title          string
-	CreateDate     string
-	Value          []value
+	YamlVersion int
+	Title       string
+	CreateDate  string
+	Value       []value
 }
 
 type value struct {
@@ -257,16 +258,16 @@ type value struct {
 }
 
 func createCacheFile(docNum string, spec []specDocInfo) {
-    cache := cache{
-        YamlVersion: 2,
-        Title:       "\"3GPP Document " + docNum + "\"",
-        CreateDate:  getNowTime(),
-        Value:       valueStructCreation(docNum, spec),
-    }
-    fp, b := checkYaml(docNum)
-    if b {
-        cache.createYaml(fp)
-    }
+	cache := cache{
+		YamlVersion: 2,
+		Title:       "\"3GPP Document " + docNum + "\"",
+		CreateDate:  getNowTime(),
+		Value:       valueStructCreation(docNum, spec),
+	}
+	fp, b := checkYaml(docNum)
+	if b {
+		cache.createYaml(fp)
+	}
 }
 
 func getNowTime() string {
@@ -276,14 +277,14 @@ func getNowTime() string {
 }
 
 func valueStructCreation(docNum string, spec []specDocInfo) []value {
-    values := []value{}
-    for _, v := range spec {
-        value := value{
-            Version: v.version,
-            Name:    docNum,
-            Url:     v.url,
-        }
-        values = append(values, value)
-    }
-    return values
+	values := []value{}
+	for _, v := range spec {
+		value := value{
+			Version: v.version,
+			Name:    docNum,
+			Url:     v.url,
+		}
+		values = append(values, value)
+	}
+	return values
 }

@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"os"
-	"fmt"
 	"errors"
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 	"local.packages/expedition3gpp"
 )
@@ -15,7 +16,7 @@ func init() {
 
 	params := params{
 		documentNumber:  "",
-		documentVersion: "",	
+		documentVersion: "",
 		outputPath:      "",
 		cache:           false,
 	}

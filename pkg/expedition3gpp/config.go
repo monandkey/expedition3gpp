@@ -1,11 +1,12 @@
 package expedition3gpp
 
 import (
-	"os"
 	"fmt"
-	"strconv"
-	"runtime"
 	"io/ioutil"
+	"os"
+	"runtime"
+	"strconv"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -48,13 +49,13 @@ func getHomedir() string {
 
 func getSeparate() string {
 	switch runtime.GOOS {
-		case "windows":
-			return "\\"
-		case "linux":
-			return "/"
-		default:
-			fmt.Println("Your OS is not support")
-			os.Exit(0)
+	case "windows":
+		return "\\"
+	case "linux":
+		return "/"
+	default:
+		fmt.Println("Your OS is not support")
+		os.Exit(0)
 	}
 	return ""
 }
@@ -97,11 +98,11 @@ func InitializeConfig(initConfig *InitConfig) {
 	if runtime.GOOS == "windows" {
 		str := homeDir + "\\" + getConfigName()
 		fileName = &str
-	
+
 	} else if runtime.GOOS == "linux" {
 		str := homeDir + "/" + getConfigName()
 		fileName = &str
-	
+
 	} else {
 		fmt.Println("Your OS is not supported.")
 		os.Exit(1)
@@ -113,10 +114,10 @@ func InitializeConfig(initConfig *InitConfig) {
 		return
 	}
 	defer fp.Close()
-	data := [] string{"strageLocation: " + initConfig.StrageLocation + "\n",
-					  "cacheEnable: " + strconv.FormatBool(initConfig.CacheEnable) + "\n",
-					  "cacheRetentionTime: " + strconv.Itoa(initConfig.CacheRetentionTime) + "\n",
-					  "cacheLocation: " + initConfig.CacheLocation + "\n"}
+	data := []string{"strageLocation: " + initConfig.StrageLocation + "\n",
+		"cacheEnable: " + strconv.FormatBool(initConfig.CacheEnable) + "\n",
+		"cacheRetentionTime: " + strconv.Itoa(initConfig.CacheRetentionTime) + "\n",
+		"cacheLocation: " + initConfig.CacheLocation + "\n"}
 
 	writeConfig(data, *fileName)
 }

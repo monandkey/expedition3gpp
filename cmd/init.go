@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"os"
 	"fmt"
-	"strings"
+	"os"
 	"strconv"
+	"strings"
+
 	"github.com/spf13/cobra"
 	"local.packages/expedition3gpp"
 )
@@ -39,7 +40,7 @@ func init() {
 			expedition3gpp.InitializeConfig(&initConfig)
 			fmt.Println("Create config file")
 			os.Exit(0)
-		
+
 		} else {
 			var a string
 			fmt.Printf("overwrite ? y or n: ")
