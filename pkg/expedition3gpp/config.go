@@ -133,7 +133,7 @@ func writeConfig(data []string, fileName string) {
 
 	err := ioutil.WriteFile(fileName, b, 0666)
 	if err != nil {
-		fmt.Println(os.Stderr, err)
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 }

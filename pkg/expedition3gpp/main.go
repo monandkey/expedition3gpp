@@ -64,7 +64,7 @@ func SearchExpedition3gpp(config *Config) error {
 		if len(spec) == 0 {
 			return errors.New("\rThe specified document does not exist.     ")
 		}
-		fmt.Println("\r[OK] Download Success.\n")
+		fmt.Printf("\r[OK] Download Success.\n")
 
 		if config.DocumentVersion == "" {
 			formatOutput(spec)
@@ -153,7 +153,7 @@ func RunExpedition3gpp(config *Config) error {
 		if len(spec) == 0 {
 			return errors.New("\rThe specified document does not exist.     ")
 		}
-		fmt.Println("\r[OK] Download Success.\n")
+		fmt.Printf("\r[OK] Download Success.\n")
 
 		var verNum string
 		if config.DocumentVersion == "" {
@@ -162,7 +162,7 @@ func RunExpedition3gpp(config *Config) error {
 			fmt.Scan(&verNum)
 		}
 
-		for i, _ := range spec {
+		for i := range spec {
 			if spec[i].version == config.DocumentVersion || spec[i].version == verNum {
 				dstUrl = &spec[i].url
 				break
@@ -195,7 +195,7 @@ func RunExpedition3gpp(config *Config) error {
 			fmt.Scan(&verNum)
 		}
 
-		for i, _ := range cy.Value {
+		for i := range cy.Value {
 			if cy.Value[i].Version == config.DocumentVersion || cy.Value[i].Version == verNum {
 				dstUrl = &cy.Value[i].Url
 				break
@@ -237,7 +237,7 @@ func RunExpedition3gpp(config *Config) error {
 		return err
 	}
 	close(cancel)
-	fmt.Println("\r[OK] Download Success.\n")
+	fmt.Printf("\r[OK] Download Success.\n")
 
 	if err := filePath.fileUnzip(); err != nil {
 		return err

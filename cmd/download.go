@@ -44,7 +44,7 @@ func init() {
 
 		err := expedition3gpp.RunExpedition3gpp(&config)
 		if err != nil {
-			fmt.Println(os.Stderr, err)
+			fmt.Fprint(os.Stderr, err)
 			os.Exit(0)
 		}
 		return nil
