@@ -2,19 +2,11 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 	"local.packages/expedition3gpp"
 )
-
-type params struct {
-	documentNumber  string
-	documentVersion string
-	outputPath      string
-	cache           bool
-}
 
 func init() {
 	searchCmd := &cobra.Command{}
@@ -28,17 +20,17 @@ func init() {
 		cache:           false,
 	}
 
-	searchCmd.Flags().StringVar(&params.documentNumber, "document-number", params.documentNumber, "3GPP Document Number")
-	searchCmd.Flags().StringVar(&params.documentVersion, "document-version", params.documentVersion, "3GPP Document Version")
-	searchCmd.Flags().BoolVar(&params.cache, "no-cache", params.cache, "Not using cache")
+	searchCmd.Flags().StringVarP(&params.documentNumber, "document-number", "n", params.documentNumber, "3GPP Document Number")
+	searchCmd.Flags().StringVarP(&params.documentVersion, "document-version", "v", params.documentVersion, "3GPP Document Version")
+	searchCmd.Flags().BoolVarP(&params.cache, "no-cache", "c", params.cache, "Not using cache")
 
 	searchCmd.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(os.Args) < 3 {
-			return errors.New("The argument is missing.")
+			return searchCmd.Help()
 		}
 
 		if params.documentNumber == "" {
-			return errors.New("Specify the document.")
+			return errors.New("Specify the document.\n")
 		}
 
 		config := expedition3gpp.Config{
@@ -50,8 +42,7 @@ func init() {
 
 		err := expedition3gpp.SearchExpedition3gpp(&config)
 		if err != nil {
-			fmt.Fprint(os.Stderr, err)
-			os.Exit(0)
+			return err
 		}
 		return nil
 	}
