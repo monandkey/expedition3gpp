@@ -22,10 +22,10 @@ func init() {
 		CacheLocation:      "HOMEDIR",
 	}
 
-	initCmd.Flags().StringVar(&initConfig.StrageLocation, "strage-location", initConfig.StrageLocation, "Specify the location to save the config.\nwindows -> C:\\Users\\testuser\nlinux   -> /home/testuser\n")
-	initCmd.Flags().BoolVar(&initConfig.CacheEnable, "cache-enable", initConfig.CacheEnable, "Enable or disable the cache\ntrue  -> enable\nfalse -> disable\n")
-	initCmd.Flags().IntVar(&initConfig.CacheRetentionTime, "cache-retention-time", initConfig.CacheRetentionTime, "Specify the validity period for saving the cache.\n[0...4294967295]\n")
-	initCmd.Flags().StringVar(&initConfig.CacheLocation, "cache-location", initConfig.CacheLocation, "Specify the location to save the cache.\nwindows -> C:\\Users\\testuser\nlinux   -> /home/testuser\n")
+	initCmd.Flags().StringVarP(&initConfig.StrageLocation, "strage-location", "s", initConfig.StrageLocation, "Specify the location to save the config.\nwindows -> C:\\Users\\testuser\nlinux   -> /home/testuser\n")
+	initCmd.Flags().BoolVarP(&initConfig.CacheEnable, "cache-enable", "e", initConfig.CacheEnable, "Enable or disable the cache\ntrue  -> enable\nfalse -> disable\n")
+	initCmd.Flags().IntVarP(&initConfig.CacheRetentionTime, "cache-retention-time", "r", initConfig.CacheRetentionTime, "Specify the validity period for saving the cache.\n[0...4294967295]\n")
+	initCmd.Flags().StringVarP(&initConfig.CacheLocation, "cache-location", "l", initConfig.CacheLocation, "Specify the location to save the cache.\nwindows -> C:\\Users\\testuser\nlinux   -> /home/testuser\n")
 
 	initCmd.RunE = func(cmd *cobra.Command, args []string) error {
 		// If false is specified, it overrides the boolean value.
@@ -39,7 +39,7 @@ func init() {
 		if expedition3gpp.ExistInitConfig() {
 			expedition3gpp.InitializeConfig(&initConfig)
 			fmt.Println("Create config file")
-			os.Exit(0)
+			return nil
 
 		} else {
 			var a string
