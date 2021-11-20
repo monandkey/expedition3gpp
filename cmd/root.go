@@ -12,6 +12,7 @@ var rootCmd = &cobra.Command{}
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(0)
 	}
 }
@@ -19,15 +20,9 @@ func Execute() {
 func init() {
 	rootCmd.Use = "expedition3gpp"
 	rootCmd.Short = "Download the 3GPP document"
-
-	var version bool
-	rootCmd.Flags().BoolVarP(&version, "version", "v", false, "display version")
-
+	rootCmd.Version = "1.0.0"
+	rootCmd.SilenceUsage = true
 	rootCmd.RunE = func(cmd *cobra.Command, args []string) error {
-		if version {
-			fmt.Println("version: 1.0.0")
-			os.Exit(0)
-		}
 		return rootCmd.Help()
 	}
 }
