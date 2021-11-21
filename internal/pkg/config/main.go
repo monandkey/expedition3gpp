@@ -25,7 +25,10 @@ func (b *baseParams) Load() params {
 	fileName := getFileName()
 
 	if !(fileExist(fileName)) {
-		return b.params
+		b.SetParams("HOMEDIR", true, 14400, "HOMEDIR")
+		if err := b.Write(); err != nil {
+			return b.params
+		}
 	}
 	return configLoad(fileName)
 }
@@ -53,4 +56,8 @@ func (b *baseParams) Write() error {
 		fmt.Println("Create config file")
 	}
 	return nil
+}
+
+func GetConfigName() string {
+	return getFileName()
 }
