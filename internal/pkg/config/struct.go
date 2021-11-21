@@ -2,7 +2,7 @@ package config
 
 type ConfigAction interface {
 	SetParams(string, bool, int, string)
-	Load()
+	Load() params
 	Write() error
 }
 

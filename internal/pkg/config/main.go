@@ -21,13 +21,13 @@ func (b *baseParams) SetParams(
 	b.params.CacheLocation = cacheLocation
 }
 
-func (b *baseParams) Load() {
+func (b *baseParams) Load() params {
 	fileName := getFileName()
 
 	if !(fileExist(fileName)) {
-		return
+		return b.params
 	}
-	configLoad(fileName)
+	return configLoad(fileName)
 }
 
 func (b *baseParams) Write() error {

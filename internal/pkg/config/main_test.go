@@ -59,7 +59,9 @@ func Test_baseParams_Write(t *testing.T) {
 			b := baseParams{
 				params: tt.fields.params,
 			}
-			b.Write()
+			if err := b.Write(); err != nil {
+				t.Errorf("configLoad() = %s", err)
+			}
 		})
 	}
 }
