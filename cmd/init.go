@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/monandkey/expedition3gpp/pkg/config"
+	"github.com/monandkey/expedition3gpp/internal/pkg/config"
 	"github.com/spf13/cobra"
 )
 

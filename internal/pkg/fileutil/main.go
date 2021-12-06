@@ -19,6 +19,11 @@ func FileCreate(fileName string) error {
 	return nil
 }
 
+func FileCreateReturnAll(fileName string) (*os.File, error) {
+	out, err := os.Create(fileName)
+	return out, err
+}
+
 func FileOpen(fileName string) error {
 	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0664)
 	if err != nil {

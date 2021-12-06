@@ -2,13 +2,7 @@ module github.com/monandkey/expedition3gpp
 
 go 1.16
 
-require (
-	github.com/monandkey/expedition3gpp/cmd v0.0.0-00010101000000-000000000000
-	github.com/monandkey/expedition3gpp/internal/pkg/config v0.0.0-00010101000000-000000000000 // indirect
-	github.com/monandkey/expedition3gpp/internal/pkg/expedition v0.0.0-00010101000000-000000000000 // indirect
-	github.com/monandkey/expedition3gpp/internal/pkg/fileutil v0.0.0-00010101000000-000000000000 // indirect
-	github.com/spf13/cobra v1.2.1 // indirect
-)
+require github.com/monandkey/expedition3gpp/cmd v0.0.0-00010101000000-000000000000
 
 replace (
 	github.com/monandkey/expedition3gpp/cmd => ./cmd
