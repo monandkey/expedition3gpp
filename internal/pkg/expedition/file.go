@@ -1,7 +1,11 @@
 package expedition
 
 import (
+	"archive/zip"
+	"io"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"regexp"
 
 	"gopkg.in/yaml.v2"
@@ -50,6 +54,41 @@ func yamlWrite(filepath string, data interface{}) error {
 
 	if err := ioutil.WriteFile(filepath, buf, 0664); err != nil {
 		return err
+	}
+	return nil
+}
+
+func fileUnzip(path string) error {
+	r, err := zip.OpenReader(path)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	for _, v := range r.File {
+		rc, err := v.Open()
+		if err != nil {
+			return err
+		}
+		defer rc.Close()
+
+		reString := regexp.MustCompile(`[0-9]{5}-...\.zip`)
+		fullPath := filepath.Join(reString.ReplaceAllString(path, v.Name))
+
+		if v.FileInfo().IsDir() {
+			os.MkdirAll(fullPath, v.Mode())
+		} else {
+			f, err := os.OpenFile(fullPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, v.Mode())
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			_, err = io.Copy(f, rc)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

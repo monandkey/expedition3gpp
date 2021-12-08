@@ -47,7 +47,7 @@ func pageParse(doc *goquery.Document) []valueBody {
 		if zipUrl != "" && versionInfo != "" {
 			data := valueBody{
 				Url:     zipUrl,
-				Name:    "",
+				Name:    regexp.MustCompile(`[0-9]{2}.[0-9]{3}`).FindString(zipUrl),
 				Version: versionInfo,
 			}
 			contents = append(contents, data)

@@ -24,6 +24,13 @@ func FileCreateReturnAll(fileName string) (*os.File, error) {
 	return out, err
 }
 
+func FileRemove(fileName string) error {
+	if err := os.Remove(fileName); err != nil {
+		return err
+	}
+	return nil
+}
+
 func FileOpen(fileName string) error {
 	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0664)
 	if err != nil {

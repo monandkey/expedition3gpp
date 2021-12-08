@@ -2,6 +2,7 @@ package expedition
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 )
 
@@ -41,16 +42,34 @@ func (b *baseParams) Search() error {
 }
 
 func (b *baseParams) Download() error {
+	if b.DocumentVersion == "" {
+		fmt.Printf("Please specify the version you want to download. : ")
+		fmt.Scan(&b.DocumentVersion)
+	}
+
 	downloadUrl := getDownloadURL(b.value, b.DocumentVersion)
 	if downloadUrl == "" {
 		return errors.New("the specified version does not exist")
 	}
 
+	configParams := configLoad()
+	if b.OutputPath == "" {
+		b.OutputPath = configParams.strageLocation
+	}
+
 	filePath := getSaveFilePath(b.OutputPath, b.DocumentNumber, downloadUrl)
-	err := downloadContents(downloadUrl, filePath)
-	if err != nil {
+	if err := downloadContents(downloadUrl, filePath); err != nil {
 		return err
 	}
+
+	if err := fileUnzip(filePath); err != nil {
+		return err
+	}
+
+	if err := fileRemove(filePath); err != nil {
+		return err
+	}
+
 	return nil
 }
 

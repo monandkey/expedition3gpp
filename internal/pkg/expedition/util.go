@@ -23,6 +23,10 @@ func fileCreate(fileName string) (*os.File, error) {
 	return out, err
 }
 
+func fileRemove(fileName string) error {
+	return fileutil.FileRemove(fileName)
+}
+
 func fileOpen(fileName string) error {
 	return fileutil.FileOpen(fileName)
 }
