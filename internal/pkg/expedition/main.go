@@ -32,10 +32,15 @@ func (b *baseParams) Search() error {
 		contents := cacheLoad(filePath)
 		b.value = contents.Value
 	} else {
+		cancel := make(chan struct{})
+		go displayLoading(cancel)
 		b.value, err = pageFetch(b.DocumentNumber)
+		close(cancel)
+
 		if err != nil {
 			return err
 		}
+		fmt.Printf("\r[OK] Download Success.\n")
 	}
 	formatDisplay(b.value)
 	return nil
@@ -58,10 +63,14 @@ func (b *baseParams) Download() error {
 	}
 
 	filePath := getSaveFilePath(b.OutputPath, b.DocumentNumber, downloadUrl)
+	cancel := make(chan struct{})
+	go displayLoading(cancel)
 	if err := downloadContents(downloadUrl, filePath); err != nil {
 		return err
 	}
+	close(cancel)
 
+	fmt.Printf("\r[OK] Download Success.\n")
 	if err := fileUnzip(filePath); err != nil {
 		return err
 	}

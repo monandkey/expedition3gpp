@@ -1,7 +1,6 @@
 package expedition
 
 import (
-	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -89,37 +88,4 @@ func yamlLoad(fileName string) yamlStruct {
 
 func cacheLoad(filePath string) yamlStruct {
 	return yamlLoad(filePath)
-}
-
-func formatDisplay(value []valueBody) {
-	maxUrlLen := maxStringLength(value)
-	headerPadding := map[string]string{
-		"number":  strings.Repeat("-", 5),
-		"version": strings.Repeat("-", 9),
-		"url":     strings.Repeat("-", maxUrlLen+2),
-	}
-
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	fmt.Printf("| No. | Version | URL %s |\n", strings.Repeat(" ", maxUrlLen-4))
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	for i, v := range value {
-		urlLen := urlPadding(maxUrlLen, v.Url)
-		fmt.Printf("| %3d | %7s | %s%s |\n", i+1, v.Version, v.Url, urlLen)
-	}
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-}
-
-func maxStringLength(str []valueBody) int {
-	max := 0
-	for _, v := range str {
-		if max < len(v.Url) {
-			max = len(v.Url)
-		}
-	}
-	return max
-}
-
-func urlPadding(num int, url string) string {
-	padding := num - len(url)
-	return strings.Repeat(" ", padding)
 }
