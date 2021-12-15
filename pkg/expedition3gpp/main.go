@@ -1,8 +1,8 @@
 package expedition3gpp
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"regexp"
 )
 
@@ -41,7 +41,7 @@ func SearchExpedition3gpp(config *Config) error {
 			}
 		}
 	}
-	
+
 	/*
 		+---------------------------+-------+
 		| Parameter                 | value |
@@ -58,13 +58,13 @@ func SearchExpedition3gpp(config *Config) error {
 		go fetch3gppPage(srcUrl, c)
 		go displayLoading(cancel)
 
-		spec := <- c
+		spec := <-c
 		close(cancel)
 
 		if len(spec) == 0 {
 			return errors.New("\rThe specified document does not exist.     ")
 		}
-		fmt.Println("\r[OK] Download Success.\n")
+		fmt.Printf("\r[OK] Download Success.\n")
 
 		if config.DocumentVersion == "" {
 			formatOutput(spec)
@@ -147,13 +147,13 @@ func RunExpedition3gpp(config *Config) error {
 		go fetch3gppPage(srcUrl, c)
 		go displayLoading(cancel)
 
-		spec := <- c
+		spec := <-c
 		close(cancel)
 
 		if len(spec) == 0 {
 			return errors.New("\rThe specified document does not exist.     ")
 		}
-		fmt.Println("\r[OK] Download Success.\n")
+		fmt.Printf("\r[OK] Download Success.\n")
 
 		var verNum string
 		if config.DocumentVersion == "" {
@@ -162,29 +162,29 @@ func RunExpedition3gpp(config *Config) error {
 			fmt.Scan(&verNum)
 		}
 
-		for i, _ := range spec {
+		for i := range spec {
 			if spec[i].version == config.DocumentVersion || spec[i].version == verNum {
 				dstUrl = &spec[i].url
 				break
 			}
 
-			if i + 1 == len(spec) {
+			if i+1 == len(spec) {
 				return errors.New("The relevant version does not exist.")
 			}
 		}
-	
+
 		if cp.CacheEnable {
 			createCacheFile(config.DocumentNumber, spec)
 		}
 
-	/*
-		+---------------------------+-------+
-		| Parameter                 | value |
-		+---------------------------+-------+
-		| config.DocumentNumber     | xxxxx |
-		| tpppYaml.validateLocation | true  |
-		+---------------------------+-------+
-	*/
+		/*
+			+---------------------------+-------+
+			| Parameter                 | value |
+			+---------------------------+-------+
+			| config.DocumentNumber     | xxxxx |
+			| tpppYaml.validateLocation | true  |
+			+---------------------------+-------+
+		*/
 	} else if config.DocumentNumber != "" && tpppYaml.validateLocation() {
 		cy := getCacheValue(config.DocumentNumber)
 
@@ -195,13 +195,13 @@ func RunExpedition3gpp(config *Config) error {
 			fmt.Scan(&verNum)
 		}
 
-		for i, _ := range cy.Value {
+		for i := range cy.Value {
 			if cy.Value[i].Version == config.DocumentVersion || cy.Value[i].Version == verNum {
 				dstUrl = &cy.Value[i].Url
 				break
 			}
 
-			if i + 1 == len(cy.Value) {
+			if i+1 == len(cy.Value) {
 				return errors.New("The relevant version does not exist.")
 			}
 		}
@@ -222,7 +222,7 @@ func RunExpedition3gpp(config *Config) error {
 	var filePath saveLocation
 	if config.OutputPath == "" {
 		filePath = setSaveLocation(strageLocation(searchResult[0][0]))
-	
+
 	} else {
 		filePath = setSaveLocation(outputLocation(config.OutputPath, searchResult[0][0]))
 	}
@@ -237,7 +237,7 @@ func RunExpedition3gpp(config *Config) error {
 		return err
 	}
 	close(cancel)
-	fmt.Println("\r[OK] Download Success.\n")
+	fmt.Printf("\r[OK] Download Success.\n")
 
 	if err := filePath.fileUnzip(); err != nil {
 		return err

@@ -1,12 +1,12 @@
 package expedition3gpp
 
 import (
-	"os"
-	"io"
 	"errors"
-	"strings"
-	"regexp"
+	"io"
 	"net/http"
+	"os"
+	"regexp"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -53,7 +53,7 @@ func stringSearch(targetString string, reString string) (string, error) {
 }
 
 type specDocInfo struct {
-	url string
+	url     string
 	version string
 }
 

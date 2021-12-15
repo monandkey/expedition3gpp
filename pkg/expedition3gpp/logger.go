@@ -3,6 +3,7 @@ package expedition3gpp
 import (
 	"fmt"
 	"runtime"
+
 	"github.com/fatih/color"
 )
 
@@ -15,7 +16,7 @@ func formatOutput(spec []specDocInfo) {
 		fmt.Println("| No. | Version | URL                                                                              |")
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		for i := 0; i < len(spec); i++ {
-			fmt.Printf("| %3d | %7s | %-80s |\n", i + 1, spec[i].version, spec[i].url)
+			fmt.Printf("| %3d | %7s | %-80s |\n", i+1, spec[i].version, spec[i].url)
 		}
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		return
@@ -26,7 +27,7 @@ func formatOutput(spec []specDocInfo) {
 		fmt.Println("| No. | Version | URL                                                                              |")
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		for i := 0; i < len(spec); i++ {
-			fmt.Printf("| %3d | %7s | %-89s |\n", i + 1, spec[i].version, color.HiCyanString(spec[i].url))
+			fmt.Printf("| %3d | %7s | %-89s |\n", i+1, spec[i].version, color.HiCyanString(spec[i].url))
 		}
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		return
@@ -67,7 +68,7 @@ func formatOutputYaml(cy cacheYaml) {
 		fmt.Println("| No. | Version | URL                                                                              |")
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		for i := 0; i < len(cy.Value); i++ {
-			fmt.Printf("| %3d | %7s | %-80s |\n", i + 1, cy.Value[i].Version, cy.Value[i].Url)
+			fmt.Printf("| %3d | %7s | %-80s |\n", i+1, cy.Value[i].Version, cy.Value[i].Url)
 		}
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		return
@@ -78,7 +79,7 @@ func formatOutputYaml(cy cacheYaml) {
 		fmt.Println("| No. | Version | URL                                                                              |")
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		for i := 0; i < len(cy.Value); i++ {
-			fmt.Printf("| %3d | %7s | %-89s |\n", i + 1, cy.Value[i].Version, color.HiCyanString(cy.Value[i].Url))
+			fmt.Printf("| %3d | %7s | %-89s |\n", i+1, cy.Value[i].Version, color.HiCyanString(cy.Value[i].Url))
 		}
 		fmt.Println("+-----+---------+----------------------------------------------------------------------------------+")
 		return
@@ -119,7 +120,7 @@ func formatOutputYamlOneVersion(cy cacheYaml, version string) {
 var marks = []string{"|", "/", "-", "\\"}
 
 func mark(i int) string {
-    return marks[i%4]
+	return marks[i%4]
 }
 
 func dot(p int) string {
@@ -131,11 +132,11 @@ func dot(p int) string {
 }
 
 func displayLoading(cancel chan struct{}) {
-    cnt := 1000000000
+	cnt := 1000000000
 	i := 1
 	for {
 		select {
-		case <- cancel:
+		case <-cancel:
 			return
 
 		default:

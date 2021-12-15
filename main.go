@@ -1,7 +1,7 @@
 package main
 
 import (
-	"local.packages/cmd"
+	"github.com/monandkey/expedition3gpp/cmd"
 )
 
 func main() {

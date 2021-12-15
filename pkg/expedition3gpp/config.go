@@ -1,36 +1,22 @@
 package expedition3gpp
 
 import (
-	"os"
 	"fmt"
-	"strconv"
-	"runtime"
 	"io/ioutil"
+	"os"
+	"runtime"
+	"strconv"
+
 	"gopkg.in/yaml.v2"
 )
 
-type params struct {
-	StrageLocation     string `yaml:"strageLocation"`
-	CacheEnable        bool   `yaml:"cacheEnable"`
-	CacheRetentionTime int    `yaml:"cacheRetentionTime"`
-	CacheLocation      string `yaml:"cacheLocation"`
-}
-
-type configPath struct {
-	path string
-}
+const configName string = ".expedition3gpp.yaml"
 
 func (c configPath) configLoad() params {
 	params := params{}
 	b, _ := os.ReadFile(c.path)
 	yaml.Unmarshal(b, &params)
 	return params
-}
-
-type disassembledCharacter struct {
-	homedir  string
-	separate string
-	filename string
 }
 
 func (d disassembledCharacter) stringJoin() configPath {
@@ -48,26 +34,22 @@ func getHomedir() string {
 
 func getSeparate() string {
 	switch runtime.GOOS {
-		case "windows":
-			return "\\"
-		case "linux":
-			return "/"
-		default:
-			fmt.Println("Your OS is not support")
-			os.Exit(0)
+	case "windows":
+		return "\\"
+	case "linux":
+		return "/"
+	default:
+		fmt.Println("Your OS is not support")
+		os.Exit(0)
 	}
 	return ""
-}
-
-func getConfigName() string {
-	return ".expedition3gpp.yaml"
 }
 
 func getConfigParameter() params {
 	ds := disassembledCharacter{
 		homedir:  getHomedir(),
 		separate: getSeparate(),
-		filename: getConfigName(),
+		filename: configName,
 	}
 	return ds.stringJoin().configLoad()
 }
@@ -76,49 +58,34 @@ func GetConfigParameter() params {
 	return getConfigParameter()
 }
 
-type InitConfig struct {
-	StrageLocation     string
-	CacheEnable        bool
-	CacheRetentionTime int
-	CacheLocation      string
-}
-
-type initConfig struct {
-	strageLocation     string
-	cacheEnable        bool
-	cacheRetentionTime int
-	cacheLocation      string
-}
-
 func InitializeConfig(initConfig *InitConfig) {
 	homeDir, _ := os.UserHomeDir()
-	var fileName *string
+	var fileName string
 
-	if runtime.GOOS == "windows" {
-		str := homeDir + "\\" + getConfigName()
-		fileName = &str
-	
-	} else if runtime.GOOS == "linux" {
-		str := homeDir + "/" + getConfigName()
-		fileName = &str
-	
-	} else {
+	switch runtime.GOOS {
+	case "windows":
+		fileName = homeDir + "\\" + configName
+	case "linux":
+		fileName = homeDir + "/" + configName
+	default:
 		fmt.Println("Your OS is not supported.")
-		os.Exit(1)
+		os.Exit(0)
 	}
 
-	fp, err := os.Create(*fileName)
+	fp, err := os.Create(fileName)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer fp.Close()
-	data := [] string{"strageLocation: " + initConfig.StrageLocation + "\n",
-					  "cacheEnable: " + strconv.FormatBool(initConfig.CacheEnable) + "\n",
-					  "cacheRetentionTime: " + strconv.Itoa(initConfig.CacheRetentionTime) + "\n",
-					  "cacheLocation: " + initConfig.CacheLocation + "\n"}
+	data := []string{
+		"strageLocation: " + initConfig.StrageLocation + "\n",
+		"cacheEnable: " + strconv.FormatBool(initConfig.CacheEnable) + "\n",
+		"cacheRetentionTime: " + strconv.Itoa(initConfig.CacheRetentionTime) + "\n",
+		"cacheLocation: " + initConfig.CacheLocation + "\n",
+	}
 
-	writeConfig(data, *fileName)
+	writeConfig(data, fileName)
 }
 
 func writeConfig(data []string, fileName string) {
@@ -132,7 +99,7 @@ func writeConfig(data []string, fileName string) {
 
 	err := ioutil.WriteFile(fileName, b, 0666)
 	if err != nil {
-		fmt.Println(os.Stderr, err)
+		fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 }
@@ -141,7 +108,7 @@ func ExistInitConfig() bool {
 	ds := disassembledCharacter{
 		homedir:  getHomedir(),
 		separate: getSeparate(),
-		filename: getConfigName(),
+		filename: configName,
 	}
 	f := ds.homedir + ds.separate + ds.filename
 	_, err := os.Stat(f)

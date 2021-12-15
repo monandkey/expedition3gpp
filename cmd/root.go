@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"os"
 	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 )
 
@@ -10,23 +11,17 @@ var rootCmd = &cobra.Command{}
 
 func Execute() {
 	err := rootCmd.Execute()
-    if err != nil {
-        os.Exit(0)
-    }
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
 }
 
 func init() {
 	rootCmd.Use = "expedition3gpp"
 	rootCmd.Short = "Download the 3GPP document"
-
-	var version bool
-	rootCmd.Flags().BoolVarP(&version, "version", "v", false, "display version")
-
+	rootCmd.Version = "1.0.0"
+	rootCmd.SilenceUsage = true
 	rootCmd.RunE = func(cmd *cobra.Command, args []string) error {
-		if version {
-			fmt.Println("version: 1.0.0")
-			os.Exit(0)
-		}
 		return rootCmd.Help()
 	}
 }
