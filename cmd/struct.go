@@ -6,3 +6,10 @@ type params struct {
 	outputPath      string
 	cache           bool
 }
+
+type configParams struct {
+	strageLocation     string
+	cacheEnable        bool
+	cacheRetentionTime int
+	cacheLocation      string
+}

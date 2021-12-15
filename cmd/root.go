@@ -12,8 +12,7 @@ var rootCmd = &cobra.Command{}
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		fmt.Fprint(os.Stderr, err)
-		os.Exit(0)
+		fmt.Fprintln(os.Stderr, err)
 	}
 }
 

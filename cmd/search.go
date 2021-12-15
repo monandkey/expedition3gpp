@@ -4,8 +4,8 @@ import (
 	"errors"
 	"os"
 
+	"github.com/monandkey/expedition3gpp/internal/pkg/expedition"
 	"github.com/spf13/cobra"
-	"local.packages/expedition3gpp"
 )
 
 func init() {
@@ -30,18 +30,21 @@ func init() {
 		}
 
 		if params.documentNumber == "" {
-			return errors.New("Specify the document.\n")
+			return errors.New("specify the document")
 		}
 
-		config := expedition3gpp.Config{
-			DocumentNumber:  params.documentNumber,
-			DocumentVersion: params.documentVersion,
-			OutputPath:      params.outputPath,
-			Cache:           params.cache,
+		actor := expedition.SelectUser()
+		actor.SetParams(
+			params.documentNumber,
+			params.documentVersion,
+			params.outputPath,
+			params.cache,
+		)
+		if err := actor.Search(); err != nil {
+			return err
 		}
 
-		err := expedition3gpp.SearchExpedition3gpp(&config)
-		if err != nil {
+		if err := actor.Cache(); err != nil {
 			return err
 		}
 		return nil
