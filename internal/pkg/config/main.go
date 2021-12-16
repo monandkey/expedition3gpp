@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -40,10 +39,11 @@ func (b *baseParams) Write() error {
 	if fileExist(fileName) {
 		fmt.Print("overwrite ? y or n: ")
 		fmt.Scan(&overWriteFlag)
-	}
 
-	if overWriteFlag != "y" {
-		return errors.New("configurations were not changed")
+		if overWriteFlag != "y" {
+			fmt.Println("configurations were not changed")
+			return nil
+		}
 	}
 
 	if err := configWrite(fileName, b.params); err != nil {

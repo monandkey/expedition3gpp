@@ -12,6 +12,7 @@ func init() {
 	searchCmd := &cobra.Command{}
 	searchCmd.Use = "search"
 	searchCmd.Short = "Search for 3GPP documentation."
+	searchCmd.SilenceUsage = true
 
 	params := params{
 		documentNumber:  "",

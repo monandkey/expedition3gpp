@@ -12,6 +12,7 @@ func init() {
 	downloadCmd := &cobra.Command{}
 	downloadCmd.Use = "download"
 	downloadCmd.Short = "Download the 3GPP documentation."
+	downloadCmd.SilenceUsage = true
 
 	params := params{
 		documentNumber:  "",

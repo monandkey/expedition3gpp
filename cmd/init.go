@@ -13,6 +13,7 @@ func init() {
 	initCmd := &cobra.Command{}
 	initCmd.Use = "init"
 	initCmd.Short = "Create the config file"
+	initCmd.SilenceUsage = true
 
 	initConfig := configParams{
 		strageLocation:     "HOMEDIR",
