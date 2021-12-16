@@ -44,7 +44,14 @@ func (b *baseParams) Search() error {
 		}
 		fmt.Printf("\r[OK] Download Success.\n")
 	}
-	formatDisplay(b.value)
+
+	if b.releaseNumber != "" {
+		formatDisplayRelease(b.value, b.releaseNumber)
+	} else if b.DocumentVersion != "" {
+		formatDisplayVersion(b.value, b.DocumentVersion)
+	} else {
+		formatDisplay(b.value)
+	}
 	return nil
 }
 
