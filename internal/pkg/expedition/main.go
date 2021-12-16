@@ -50,7 +50,7 @@ func (b *baseParams) Search() error {
 	} else if b.DocumentVersion != "" {
 		formatDisplayVersion(b.value, b.DocumentVersion)
 	} else {
-		formatDisplay(b.value)
+		formatDisplayAll(b.value)
 	}
 	return nil
 }

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func formatDisplay(value []valueBody) {
+func formatDisplayAll(value []valueBody) {
 	maxUrlLen := maxStringLength(value)
 	headerPadding := map[string]string{
 		"number":  strings.Repeat("-", 5),
