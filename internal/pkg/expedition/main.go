@@ -15,11 +15,13 @@ func (b *baseParams) SetParams(
 	documentVersion string,
 	outputPath string,
 	cache bool,
+	releaseNumber string,
 ) {
 	b.params.DocumentNumber = documentNumber
 	b.params.DocumentVersion = documentVersion
 	b.params.OutputPath = outputPath
 	b.params.Cache = cache
+	b.params.releaseNumber = releaseNumber
 }
 
 func (b *baseParams) Search() error {

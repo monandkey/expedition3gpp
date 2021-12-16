@@ -18,12 +18,14 @@ func init() {
 		documentVersion: "",
 		outputPath:      "",
 		cache:           false,
+		releaseNumber:   "",
 	}
 
 	downloadCmd.Flags().StringVarP(&params.documentNumber, "document-number", "n", params.documentNumber, "3GPP Document Number")
 	downloadCmd.Flags().StringVarP(&params.documentVersion, "document-version", "v", params.documentVersion, "3GPP Document Version")
 	downloadCmd.Flags().StringVarP(&params.outputPath, "output-path", "o", params.outputPath, "Specify the output location of the file")
 	downloadCmd.Flags().BoolVarP(&params.cache, "no-cache", "c", params.cache, "Not using cache")
+	downloadCmd.Flags().StringVarP(&params.releaseNumber, "release-number", "r", params.releaseNumber, "3GPP Release")
 
 	downloadCmd.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(os.Args) < 3 {
@@ -40,6 +42,7 @@ func init() {
 			params.documentVersion,
 			params.outputPath,
 			params.cache,
+			params.releaseNumber,
 		)
 		if err := actor.Search(); err != nil {
 			return err

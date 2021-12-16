@@ -18,11 +18,13 @@ func init() {
 		documentVersion: "",
 		outputPath:      "",
 		cache:           false,
+		releaseNumber:   "",
 	}
 
 	searchCmd.Flags().StringVarP(&params.documentNumber, "document-number", "n", params.documentNumber, "3GPP Document Number")
 	searchCmd.Flags().StringVarP(&params.documentVersion, "document-version", "v", params.documentVersion, "3GPP Document Version")
 	searchCmd.Flags().BoolVarP(&params.cache, "no-cache", "c", params.cache, "Not using cache")
+	searchCmd.Flags().StringVarP(&params.releaseNumber, "release-number", "r", params.releaseNumber, "3GPP Release")
 
 	searchCmd.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(os.Args) < 3 {
@@ -39,6 +41,7 @@ func init() {
 			params.documentVersion,
 			params.outputPath,
 			params.cache,
+			params.releaseNumber,
 		)
 		if err := actor.Search(); err != nil {
 			return err
