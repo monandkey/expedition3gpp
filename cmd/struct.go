@@ -5,6 +5,7 @@ type params struct {
 	documentVersion string
 	outputPath      string
 	cache           bool
+	releaseNumber   string
 }
 
 type configParams struct {

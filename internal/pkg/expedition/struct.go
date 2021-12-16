@@ -1,7 +1,7 @@
 package expedition
 
 type ExpeditionAction interface {
-	SetParams(string, string, string, bool)
+	SetParams(string, string, string, bool, string)
 	Search() error
 	Download() error
 	Cache() error
@@ -12,6 +12,7 @@ type params struct {
 	DocumentVersion string
 	OutputPath      string
 	Cache           bool
+	releaseNumber   string
 }
 
 type baseParams struct {

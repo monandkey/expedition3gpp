@@ -15,11 +15,13 @@ func (b *baseParams) SetParams(
 	documentVersion string,
 	outputPath string,
 	cache bool,
+	releaseNumber string,
 ) {
 	b.params.DocumentNumber = documentNumber
 	b.params.DocumentVersion = documentVersion
 	b.params.OutputPath = outputPath
 	b.params.Cache = cache
+	b.params.releaseNumber = releaseNumber
 }
 
 func (b *baseParams) Search() error {
@@ -42,7 +44,14 @@ func (b *baseParams) Search() error {
 		}
 		fmt.Printf("\r[OK] Download Success.\n")
 	}
-	formatDisplay(b.value)
+
+	if b.releaseNumber != "" {
+		formatDisplayRelease(b.value, b.releaseNumber)
+	} else if b.DocumentVersion != "" {
+		formatDisplayVersion(b.value, b.DocumentVersion)
+	} else {
+		formatDisplayAll(b.value)
+	}
 	return nil
 }
 
