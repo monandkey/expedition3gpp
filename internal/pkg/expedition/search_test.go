@@ -135,7 +135,7 @@ func Test_cacheLoad(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			value := cacheLoad(tt.args.filePath)
-			formatDisplay(value.Value)
+			formatDisplayAll(value.Value)
 		})
 	}
 }
