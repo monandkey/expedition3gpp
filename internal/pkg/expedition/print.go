@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func formatDisplayAll(value []valueBody) {
+func formatDisplay(value []valueBody, reString string) {
+	count := 1
 	maxUrlLen := maxStringLength(value)
 	headerPadding := map[string]string{
 		"number":  strings.Repeat("-", 5),
@@ -17,59 +18,29 @@ func formatDisplayAll(value []valueBody) {
 	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
 	fmt.Printf("| No. | Version | URL %s |\n", strings.Repeat(" ", maxUrlLen-4))
 	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	for i, v := range value {
+	for _, v := range value {
+		isBool := regexp.MustCompile(reString).MatchString(v.Version)
+		if !(isBool) {
+			continue
+		}
 		urlLen := urlPadding(maxUrlLen, v.Url)
-		fmt.Printf("| %3d | %7s | %s%s |\n", i+1, v.Version, v.Url, urlLen)
+		fmt.Printf("| %3d | %7s | %s%s |\n", count, v.Version, v.Url, urlLen)
+		count++
 	}
 	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
+}
+
+func formatDisplayAll(value []valueBody) {
+	formatDisplay(value, "")
 }
 
 func formatDisplayRelease(value []valueBody, releaseNumber string) {
-	count := 1
-	maxUrlLen := maxStringLength(value)
-	headerPadding := map[string]string{
-		"number":  strings.Repeat("-", 5),
-		"version": strings.Repeat("-", 9),
-		"url":     strings.Repeat("-", maxUrlLen+2),
-	}
-
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	fmt.Printf("| No. | Version | URL %s |\n", strings.Repeat(" ", maxUrlLen-4))
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	for _, v := range value {
-		isBool := regexp.MustCompile(releaseNumber + `.[0-9]{1,2}.[0-9]{1,2}`).MatchString(v.Version)
-		if !(isBool) {
-			continue
-		}
-		urlLen := urlPadding(maxUrlLen, v.Url)
-		fmt.Printf("| %3d | %7s | %s%s |\n", count, v.Version, v.Url, urlLen)
-		count++
-	}
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
+	var reString string = releaseNumber + `.[0-9]{1,2}.[0-9]{1,2}`
+	formatDisplay(value, reString)
 }
 
 func formatDisplayVersion(value []valueBody, documentVersion string) {
-	count := 1
-	maxUrlLen := maxStringLength(value)
-	headerPadding := map[string]string{
-		"number":  strings.Repeat("-", 5),
-		"version": strings.Repeat("-", 9),
-		"url":     strings.Repeat("-", maxUrlLen+2),
-	}
-
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	fmt.Printf("| No. | Version | URL %s |\n", strings.Repeat(" ", maxUrlLen-4))
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
-	for _, v := range value {
-		isBool := regexp.MustCompile(documentVersion).MatchString(v.Version)
-		if !(isBool) {
-			continue
-		}
-		urlLen := urlPadding(maxUrlLen, v.Url)
-		fmt.Printf("| %3d | %7s | %s%s |\n", count, v.Version, v.Url, urlLen)
-		count++
-	}
-	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
+	formatDisplay(value, documentVersion)
 }
 
 func maxStringLength(str []valueBody) int {
