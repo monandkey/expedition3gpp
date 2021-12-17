@@ -35,7 +35,7 @@ func formatDisplayAll(value []valueBody) {
 }
 
 func formatDisplayRelease(value []valueBody, releaseNumber string) {
-	var reString string = releaseNumber + `.[0-9]{1,2}.[0-9]{1,2}`
+	var reString string = `^` + releaseNumber + `\.[0-9]{1,2}\.[0-9]{1,2}`
 	formatDisplay(value, reString)
 }
 
