@@ -30,7 +30,7 @@ func (b *baseParams) Search() error {
 	filePath := getCacheFileName(config.cacheLocation, b.DocumentNumber)
 
 	var err error
-	if cacheValidate(config.cacheRetentionTime, filePath) {
+	if cacheValidate(config.cacheRetentionTime, filePath) && !(b.params.Cache) {
 		contents := cacheLoad(filePath)
 		b.value = contents.Value
 	} else {
