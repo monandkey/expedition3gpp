@@ -7,26 +7,15 @@ The purpose is to download the standardization documents developed by 3GPP.
 
 It also caches HTML information to speed up document retrieval the second and subsequent times.
 
-## Download or Build
+## Build
 
 In order to use this tool, you need to download the binary or compile the source code.
-
-### Download
-
-```bash
-$ echo "linux"
-$ wget https://github.com/monandkey/expedition3gpp/files/6824166/expedition3gpp-linux-amd64.gz
-$
-$ echo "windows"
-$ wget https://github.com/monandkey/expedition3gpp/files/6824169/expedition3gpp-windows.zip
-```
-
-### Build
+If you want to use the binaries, download them from the release
 
 ```bash
 $ cd expedition3gpp
-$ cd make
-$ cd docker compose up -d
+$ make
+$ docker compose up -d
 ```
 
 ## Usage
@@ -96,15 +85,17 @@ Use this command to get the version information of the document you want to down
 However, the download command will allow you to `download` even if you do not specify the version.
 
 ```bash
-$ expedition3gpp search -h
+Search for 3GPP documentation.
+
 Usage:
   expedition3gpp search [flags]
 
 Flags:
-      --document-number string    3GPP Document Number
-      --document-version string   3GPP Document Version
+  -n, --document-number string    3GPP Document Number
+  -v, --document-version string   3GPP Document Version
   -h, --help                      help for search
-      --no-cache                  Not using cache
+  -c, --no-cache                  Not using cache
+  -r, --release-number string     3GPP Releas
 ```
 
 ### download
@@ -112,19 +103,22 @@ Flags:
 Download the document by specifying the document number and version.
 
 ```bash
-$ expedition3gpp download -h
+Download the 3GPP documentation.
+
 Usage:
   expedition3gpp download [flags]
 
 Flags:
-      --document-number string    3GPP Document Number
-      --document-version string   3GPP Document Version
+  -n, --document-number string    3GPP Document Number
+  -v, --document-version string   3GPP Document Version
   -h, --help                      help for download
-      --no-cache                  Not using cache
+  -c, --no-cache                  Not using cache
+  -o, --output-path string        Specify the output location of the file
+  -r, --release-number string     3GPP Release
 ```
 
 ## NOTE
 
-The functions to determine the cache expiration date and whether or not to use the cache are currently not supported.
+If you are using this tool continuously, please allow at least 10 seconds between runs.
 
-We plan to add these features in the future.
+Please try not to overload the server.
