@@ -1,5 +1,6 @@
 package expedition
 
+// ExpeditionAction is an interface that defines methods to manipulate this package.
 type ExpeditionAction interface {
 	SetParams(string, string, string, bool, string)
 	Search() error
@@ -7,6 +8,7 @@ type ExpeditionAction interface {
 	Cache() error
 }
 
+// params is a structure that stores the information needed to download the 3GPP document
 type params struct {
 	DocumentNumber  string
 	DocumentVersion string
@@ -15,11 +17,13 @@ type params struct {
 	releaseNumber   string
 }
 
+// baseParams is a structure that inherits from params
 type baseParams struct {
 	params
 	value []valueBody
 }
 
+// configParams is a structure to store configuration information
 type configParams struct {
 	strageLocation     string
 	cacheEnable        bool
@@ -27,6 +31,7 @@ type configParams struct {
 	cacheLocation      string
 }
 
+// yamlStruct is a structure for loading yaml
 type yamlStruct struct {
 	YamlVersion int         `yaml:"version"`
 	Title       string      `yaml:"title"`
@@ -34,6 +39,7 @@ type yamlStruct struct {
 	Value       []valueBody `yaml:"value"`
 }
 
+// valueBody is a structure for storing information when creating a cache
 type valueBody struct {
 	Version string `yaml:"version"`
 	Name    string `yaml:"name"`

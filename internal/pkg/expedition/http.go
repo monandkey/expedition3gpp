@@ -8,6 +8,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// getRequest is a function for issuing a GET Request
 func getRequest(url string) (*http.Response, error) {
 	res, err := http.Get(url)
 	if err != nil {
@@ -20,6 +21,7 @@ func getRequest(url string) (*http.Response, error) {
 	return res, nil
 }
 
+// pageFetch is a function for retrieving HTML content
 func pageFetch(docNum string) ([]valueBody, error) {
 	srcUrl := "https://www.3gpp.org/DynaReport/" + docNum + ".htm"
 	contents := []valueBody{}
@@ -37,6 +39,7 @@ func pageFetch(docNum string) ([]valueBody, error) {
 	return contents, nil
 }
 
+// pageParse is a function for parsing the retrieved HTML content
 func pageParse(doc *goquery.Document) []valueBody {
 	contents := []valueBody{}
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -56,6 +59,7 @@ func pageParse(doc *goquery.Document) []valueBody {
 	return contents
 }
 
+// stringSearch is a function to retrieve the required string from targetString by regular expression
 func stringSearch(targetString string, reString string) string {
 	re := regexp.MustCompile(reString)
 	searchResult := re.FindAllStringSubmatch(targetString, -1)
@@ -65,6 +69,7 @@ func stringSearch(targetString string, reString string) string {
 	return ""
 }
 
+// downloadContents is a function to download 3GPP documents.
 func downloadContents(url string, fileName string) error {
 	res, err := getRequest(url)
 	if err != nil {
@@ -85,6 +90,7 @@ func downloadContents(url string, fileName string) error {
 	return nil
 }
 
+// getDownloadURL is a function that returns the version number of the document to be downloaded.
 func getDownloadURL(valu []valueBody, version string) string {
 	for _, v := range valu {
 		if v.Version != version {
