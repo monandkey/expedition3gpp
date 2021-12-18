@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// formatDisplay is a function to display the searched information.
 func formatDisplay(value []valueBody, reString string) {
 	count := 1
 	maxUrlLen := maxStringLength(value)
@@ -30,19 +31,23 @@ func formatDisplay(value []valueBody, reString string) {
 	fmt.Printf("+%s+%s+%s+\n", headerPadding["number"], headerPadding["version"], headerPadding["url"])
 }
 
+// formatDisplayAll is a function to call formatDisplay.
 func formatDisplayAll(value []valueBody) {
 	formatDisplay(value, "")
 }
 
+// formatDisplayRelease is a function to call formatDisplay.
 func formatDisplayRelease(value []valueBody, releaseNumber string) {
 	var reString string = `^` + releaseNumber + `\.[0-9]{1,2}\.[0-9]{1,2}`
 	formatDisplay(value, reString)
 }
 
+// formatDisplayVersion is a function to call formatDisplay.
 func formatDisplayVersion(value []valueBody, documentVersion string) {
 	formatDisplay(value, documentVersion)
 }
 
+// maxStringLength is a function to get the maximum number of characters in a url.
 func maxStringLength(str []valueBody) int {
 	max := 0
 	for _, v := range str {
@@ -53,17 +58,21 @@ func maxStringLength(str []valueBody) int {
 	return max
 }
 
+// urlPadding is a function for padding to the maximum number of characters.
 func urlPadding(num int, url string) string {
 	padding := num - len(url)
 	return strings.Repeat(" ", padding)
 }
 
+// marks is a variable that defines the characters to be displayed during search
 var marks = []string{"|", "/", "-", "\\"}
 
+// mark is a variable that returns one character from marks
 func mark(i int) string {
 	return marks[i%4]
 }
 
+// dot is a function to display the dot
 func dot(p int) string {
 	d := ""
 	for i := 0; i <= (p % 3); i++ {
@@ -72,6 +81,7 @@ func dot(p int) string {
 	return d
 }
 
+// displayLoading is a function to display loading on search.
 func displayLoading(cancel chan struct{}) {
 	cnt := 1000000000
 	i := 1
