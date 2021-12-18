@@ -18,7 +18,7 @@ func Execute() {
 func init() {
 	rootCmd.Use = "expedition3gpp"
 	rootCmd.Short = "Download the 3GPP document"
-	rootCmd.Version = "1.0.1"
+	rootCmd.Version = "1.0.2"
 	rootCmd.SilenceUsage = true
 	rootCmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return rootCmd.Help()

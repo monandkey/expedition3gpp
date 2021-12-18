@@ -2,6 +2,7 @@ package expedition
 
 import "errors"
 
+// Function for defining error messages.
 var (
 	ErrCode400 = errors.New("400 Bad Request")
 	ErrCode401 = errors.New("401 Unauthorized")
@@ -45,6 +46,7 @@ var (
 	ErrCode511 = errors.New("511 Network Authentication Required")
 )
 
+// getErrorMessage is a function to return a message according to the error code.
 func getErrorMessage(errCode int) error {
 	switch errCode {
 	case 400:

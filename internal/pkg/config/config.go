@@ -7,6 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// getFileName is a function to get the configuration name.
 func getFileName() string {
 	const configFileName string = ".expedition3gpp.yaml"
 	homeDir := setHomedir()
@@ -14,6 +15,7 @@ func getFileName() string {
 	return homeDir + separate + configFileName
 }
 
+// configLoad is a function for loading the configuration.
 func configLoad(fileName string) params {
 	params := params{}
 	b, _ := os.ReadFile(fileName)
@@ -21,6 +23,7 @@ func configLoad(fileName string) params {
 	return params
 }
 
+// configWrite is a function for writing the configuration.
 func configWrite(fileName string, data interface{}) error {
 	if fileExist(fileName) {
 		if err := fileOpen(fileName); err != nil {

@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// configLoad is a function that transfers the loaded configuration to another structure.
 func configLoad() configParams {
 	c := config.SelectConfigUser()
 	value := c.Load()
@@ -22,6 +23,7 @@ func configLoad() configParams {
 	return configParams
 }
 
+// getCacheFileName is a function to get the name of the cache file.
 func getCacheFileName(cacheLocation string, documentNumber string) string {
 	var filePath string
 	docNum := notationAdjustment(documentNumber)
@@ -40,6 +42,7 @@ func getCacheFileName(cacheLocation string, documentNumber string) string {
 	return filePath
 }
 
+// notationAdjustment function is used to remove a dot if there is one.
 func notationAdjustment(documentNumber string) string {
 	if strings.Contains(documentNumber, ".") {
 		return strings.Replace(documentNumber, ".", "", 1)
@@ -47,6 +50,7 @@ func notationAdjustment(documentNumber string) string {
 	return documentNumber
 }
 
+// cacheValidate is a function to validate that the loaded cache is still valid.
 func cacheValidate(cacheRetentionTime int, fileName string) bool {
 	if !(fileExist(fileName)) {
 		return false
@@ -79,6 +83,7 @@ func cacheValidate(cacheRetentionTime int, fileName string) bool {
 	return t3.Before(t2)
 }
 
+// yamlLoad is a function to load a cache file.
 func yamlLoad(fileName string) yamlStruct {
 	yamlStruct := yamlStruct{}
 	b, _ := os.ReadFile(fileName)
@@ -86,6 +91,7 @@ func yamlLoad(fileName string) yamlStruct {
 	return yamlStruct
 }
 
+// cacheLoad is a function to call yamlLoad.
 func cacheLoad(filePath string) yamlStruct {
 	return yamlLoad(filePath)
 }

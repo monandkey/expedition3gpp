@@ -1,3 +1,6 @@
+/*
+This is the main package of expedition.
+*/
 package expedition
 
 import (
@@ -6,10 +9,12 @@ import (
 	"regexp"
 )
 
+// SelectUser is a function that returns an interface.
 func SelectUser() ExpeditionAction {
 	return &baseParams{}
 }
 
+// SetParams is a function to set the required parameters.
 func (b *baseParams) SetParams(
 	documentNumber string,
 	documentVersion string,
@@ -24,6 +29,7 @@ func (b *baseParams) SetParams(
 	b.params.releaseNumber = releaseNumber
 }
 
+// Search is a function to search for 3GPP documents.
 func (b *baseParams) Search() error {
 	config := configLoad()
 	b.DocumentNumber = notationAdjustment(b.DocumentNumber)
@@ -55,6 +61,7 @@ func (b *baseParams) Search() error {
 	return nil
 }
 
+// Download is a function to download the 3GPP document.
 func (b *baseParams) Download() error {
 	if b.DocumentVersion == "" {
 		fmt.Printf("Please specify the version you want to download. : ")
@@ -91,6 +98,7 @@ func (b *baseParams) Download() error {
 	return nil
 }
 
+// Cache is a function for storing the information retrieved by the search in cache.
 func (b *baseParams) Cache() error {
 	configParams := configLoad()
 	if !(configParams.cacheEnable) {

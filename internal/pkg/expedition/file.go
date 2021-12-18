@@ -11,6 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// getSaveFilePath is a function that returns the path to save the document.
 func getSaveFilePath(outputPath string, documentNumber string, url string) string {
 	if outputPath == "HOMEDIR" {
 		outputPath = getHomedir()
@@ -24,6 +25,7 @@ func getSaveFilePath(outputPath string, documentNumber string, url string) strin
 	return path
 }
 
+// getSaveCachePath is a function that returns the path to save the cache
 func getSaveCachePath(configParams configParams, documentNumber string) string {
 	var outputPath string
 	if configParams.cacheLocation == "HOMEDIR" {
@@ -35,6 +37,7 @@ func getSaveCachePath(configParams configParams, documentNumber string) string {
 	return path
 }
 
+// yamlWrite is a function for writing yaml
 func yamlWrite(filepath string, data interface{}) error {
 	if fileExist(filepath) {
 		if err := fileOpen(filepath); err != nil {
@@ -58,6 +61,7 @@ func yamlWrite(filepath string, data interface{}) error {
 	return nil
 }
 
+// fileUnzip is a function for unzipping a zip file.
 func fileUnzip(path string) error {
 	r, err := zip.OpenReader(path)
 	if err != nil {
