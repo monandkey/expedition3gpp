@@ -2,9 +2,10 @@ version: "3.7"
 
 services:
     expedition3gpp:
-        image: monandkey/expedition3gpp:latest
+        image: golang:1.17.5
         container_name: expedition3gpp
         volumes:
-            - "./:/home/expedition3gpp/container:rw"
+            - "./:/home/expedition3gpp:rw"
         hostname: expedition3gpp
+        working_dir: "/home/expedition3gpp"
         command: /bin/sh -c "while :; do sleep 10; done"
