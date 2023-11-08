@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  wails-app:
+    image: wails-app:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: wails-app
+    hostname: wails-app
+    volumes:
+      - ..:/workspace:cached
+    command: /bin/sh -c "while :; do sleep 10; done"

@@ -1,0 +1,37 @@
+{
+    "name": "wails-app-dev",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "wails-app",
+    "workspaceFolder": "/workspace",
+    "forwardPorts": [8080],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "go.testFlags": ["-v"],
+                "go.toolsEnvVars": {"GO111MODULE": "on"},
+                "editor.guides.bracketPairs": true,
+                "editor.guides.bracketPairsHorizontal": true,
+                "editor.bracketPairColorization.enabled": true,
+                "[go]": {
+                    "editor.insertSpaces": false,
+                    "editor.formatOnSave": true,
+                    "editor.codeActionsOnSave": {
+                        "source.organizeImports": true
+                    },
+                    "editor.suggest.snippetsPreventQuickSuggestions": false
+                },
+                "go.toolsManagement.autoUpdate": true
+            },
+            "extensions": [
+                "golang.go",
+                "Prisma.prisma",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "VisualStudioExptTeam.vscodeintellicode",
+                "premparihar.gotestexplorer",
+                "oderwat.indent-rainbow",
+                "mhutchie.git-graph"
+            ]
+        }
+    }
+}
