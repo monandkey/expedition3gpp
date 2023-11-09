@@ -13,9 +13,12 @@ ENV GOPATH $HOME/go
 ENV GOBIN $GOPATH/bin
 ENV PATH $PATH:/usr/local/go/bin:$GOBIN
 
-RUN curl -OL https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
-    && rm -rf /usr/local/go \
-    && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz \
-    && rm -rf go${GO_VERSION}.linux-amd64.tar.gz
+RUN <<EOF
+    curl -OL https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+    rm -rf /usr/local/go
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+    rm -rf go${GO_VERSION}.linux-amd64.tar.gz
 
-RUN go install github.com/wailsapp/wails/v2/cmd/wails@latest
+    go install github.com/wailsapp/wails/v2/cmd/wails@latest
+    go get github.com/steebchen/prisma-client-go
+EOF
