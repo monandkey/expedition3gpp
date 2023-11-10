@@ -1,0 +1,37 @@
+generator client {
+  provider = "go run github.com/steebchen/prisma-client-go"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.db"
+}
+
+model AppConfig {
+  id                 Int     @id @default(autoincrement())
+  outputLocation     String  @default("HOMEDIR")
+  cacheEnable        Boolean @default(true)
+  cacheRetentionTime Int     @default(10)
+  cacheLocation      String  @default("HOMEDIR")
+}
+
+model ExpeditionWebSite {
+  id         String @id @default(cuid())
+  specNumber String
+  title      String
+  tableKey   String
+}
+
+model Catalogue {
+  id        String   @id @default(cuid())
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  tableName String
+}
+
+model Artifact {
+  id         String @id @default(cuid())
+  version    String
+  url        String
+  uploadDate String
+}
